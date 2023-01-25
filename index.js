@@ -3,9 +3,28 @@ const path = require('path');
 const process = require('process');
 const {authenticate} = require('@google-cloud/local-auth');
 const {google} = require('googleapis');
+const { v4: uuidv4 } = require('uuid');
+const express = require('express');
+const bodyParser = require('body-parser');
+const subscribe = require('./subscribe.js');
+
+// Create express app.
+const app = express();
+
+// Use body parser which we will use to parse request body that sending from client.
+app.use(bodyParser.json());
+
+// We will store our client files in ./client directory.
+app.use(express.static(path.join(__dirname, "client")));
+
+subscribe(app);
 
 // If modifying these scopes, delete token.json.
 const SCOPES = ['https://www.googleapis.com/auth/calendar.readonly'];
+
+// use ngrok to have a https url so the web push notifications work
+const HOST = 'https://36ab-49-205-247-250.ngrok.io';
+
 // The file token.json stores the user's access and refresh tokens, and is
 // created automatically when the authorization flow completes for the first
 // time.
@@ -90,4 +109,27 @@ async function listEvents(auth) {
   });
 }
 
-authorize().then(listEvents).catch(console.error);
+function watchCalendarEvents(auth) {
+  const calendar = google.calendar({version: 'v3', auth});
+  var channel = {
+    id: uuidv4(),
+    type: 'web_hook',
+    address: `${HOST}/calendar_events`
+  }
+  calendar.events.watch({
+    calendarId: 'primary',
+    resource: channel,
+  })
+}
+
+authorize().then(function(auth) {
+  listEvents(auth);
+  watchCalendarEvents(auth);
+}).catch(console.error);
+
+
+const PORT = 3000;
+
+app.listen(PORT, () => {
+    console.log("Server started on port " + PORT);
+});
