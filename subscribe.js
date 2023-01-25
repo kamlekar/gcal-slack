@@ -4,9 +4,9 @@ module.exports = function subscribe(app) {
   app.post('/calendar_events', (req, res) => {
     try {
       const subscription = req.body;
-      res.status(201).json({});
+      // res.status(201).json({});
       const payload = JSON.stringify({ title: "Hello World", body: "This is your first push notification" });
-      console.log('subscription: ', subscription);
+      console.log('subscription: ', JSON.stringify(subscription));
     }
     catch (ex) {
       console.log("error: ", ex);
