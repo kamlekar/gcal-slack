@@ -1,11 +1,11 @@
 const path = require('path');
 const express = require('express');
 const bodyParser = require('body-parser');
-const subscribe = require('./subscribe');
-const { watchCalendarEvents } = require('./watchCalendarEvents');
-const { PORT } = require('./constants');
-const listEvents = require('./listEvents');
-const { authorize } = require('./auth');
+const { initRoutes } = require('./src/routes');
+const { PORT } = require('./src/common/constants');
+const { watchCalendarEvents } = require('./src/google/events/watch');
+const { listEvents } = require('./src/google/events/fetch');
+const { authorize } = require('./src/google/auth/auth');
 
 // Create express app.
 const app = express();
@@ -16,7 +16,7 @@ app.use(bodyParser.json());
 // We will store our client files in ./client directory.
 app.use(express.static(path.join(__dirname, "client")));
 
-subscribe(app);
+initRoutes(app);
 
 authorize().then(function(auth) {
   listEvents(auth);

@@ -25,4 +25,6 @@ async function listEvents(auth) {
   });
 }
 
-module.exports = listEvents;
+module.exports = {
+  listEvents
+};

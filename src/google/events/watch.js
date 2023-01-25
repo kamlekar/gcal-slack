@@ -1,6 +1,6 @@
 const {google} = require('googleapis');
 const { v4: uuidv4 } = require('uuid');
-const { HOST } = require('./constants.js');
+const { HOST } = require('../../common/constants.js');
 
 let channelId;
 let channelResourceId;
