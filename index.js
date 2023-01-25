@@ -18,11 +18,17 @@ app.use(express.static(path.join(__dirname, "client")));
 
 initRoutes(app);
 
-authorize().then(function(auth) {
-  listEvents(auth);
+authorize().then(async function (auth) {
+  const events = await listEvents(auth);
+  console.log('Upcoming 10 events:');
+  events.map((event, i) => {
+    const start = event.start.dateTime || event.start.date;
+    console.log(`${start} - ${event.summary}`);
+  });
+
   watchCalendarEvents(auth);
 }).catch(console.error);
 
 app.listen(PORT, () => {
-    console.log("Server started on port " + PORT);
+  console.log("Server started on port " + PORT);
 });

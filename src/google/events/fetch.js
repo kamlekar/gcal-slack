@@ -1,14 +1,15 @@
-const {google} = require('googleapis');
+const { google } = require('googleapis');
+const moment = require('moment');
 
 /**
  * Lists the next 10 events on the user's primary calendar.
  * @param {google.auth.OAuth2} auth An authorized OAuth2 client.
  */
 async function listEvents(auth) {
-  const calendar = google.calendar({version: 'v3', auth});
+  const calendar = google.calendar({ version: 'v3', auth });
   const res = await calendar.events.list({
     calendarId: 'primary',
-    timeMin: new Date().toISOString(),
+    timeMin: moment().toISOString(),
     maxResults: 10,
     singleEvents: true,
     orderBy: 'startTime',
@@ -18,13 +19,31 @@ async function listEvents(auth) {
     console.log('No upcoming events found.');
     return;
   }
-  console.log('Upcoming 10 events:');
-  events.map((event, i) => {
-    const start = event.start.dateTime || event.start.date;
-    console.log(`${start} - ${event.summary}`);
+
+  return events;
+}
+
+// useful to set status
+async function getRunningEvents(auth) {
+  const events = await listEvents(auth);
+
+  const currentlyRunningEvents = events.map((event) => {
+    event.start.moment = moment(event.start.dateTime || event.start.date);
+    event.end.moment = moment(event.end.dateTime || event.end.date);
+    return event;
+  }).filter((event) => {
+    return moment().isBetween(event.start.moment, event.end.moment)
   });
+
+  return currentlyRunningEvents;
+}
+
+// useful to set leaves
+function getRecentlyUpdatedEvents() {
+
 }
 
 module.exports = {
-  listEvents
+  listEvents,
+  getRunningEvents
 };
