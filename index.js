@@ -1,14 +1,21 @@
 const path = require('path');
+require('dotenv').config();
+const process = require('process');
 const express = require('express');
 const bodyParser = require('body-parser');
 const { initRoutes } = require('./src/routes');
-const { PORT } = require('./src/common/constants');
 const { watchCalendarEvents } = require('./src/google/events/watch');
 const { listEvents } = require('./src/google/events/fetch');
 const { authorize } = require('./src/google/auth/auth');
 
 // Create express app.
 const app = express();
+
+const PORT = process.env.PORT;
+
+app.listen(PORT, () => {
+  console.log("Server running on port: ", PORT);
+})
 
 // Use body parser which we will use to parse request body that sending from client.
 app.use(bodyParser.json());
@@ -28,7 +35,3 @@ authorize().then(async function (auth) {
 
   watchCalendarEvents(auth);
 }).catch(console.error);
-
-app.listen(PORT, () => {
-  console.log("Server started on port " + PORT);
-});
