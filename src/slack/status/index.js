@@ -7,7 +7,7 @@ function setStatus(text, momentEndTime) {
       status_emoji: '',
       status_expiration: momentEndTime.unix()
     }
-  })
+  }).catch((err) => console.log(err))
 };
 
 function clearStatus() {
@@ -16,7 +16,7 @@ function clearStatus() {
       status_text: '',
       status_emoji: '',
     }
-  })
+  }).catch((err) => console.log(err))
 }
 
 module.exports = {
