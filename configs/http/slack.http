@@ -1,0 +1,9 @@
+POST {{$dotenv SLACK_API_URL}}/users.profile.set
+Content-type: application/json
+Authorization: Bearer {{$dotenv SLACK_USER_TOKEN}}
+
+{
+  "profile": {
+    "status_text": "hello"
+  }
+}
