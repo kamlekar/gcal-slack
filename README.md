@@ -8,14 +8,32 @@
 - Generate a credentials.json file and place it in the root folder of this repo.
 
 ### Running locally on HTTPS
-Since this app rely on Google calendars event watch subscription, it may need the server to run on HTTPs. 
+Since this app rely on Google calendars event watch subscription, it need the server to run on HTTPs. 
+
 To run on HTTPS locally, we can use `ngrok`. Once installing `ngrok`, try the following to give a random url on HTTPS:
 
 ```
 ngrok http 3000
 ```
 
-Copy the generated random string URL into `src/common/constants.js` -> `HOST` property.
+Copy the generated random HTTPS string URL into `src/common/constants.js` -> `HOST` property.
+
+<b>OR</b>
+
+Generate SSL certificate on localhost and run on a [http-server](https://www.npmjs.com/package/http-server)
+
+
+```
+brew install mkcert
+brew install nss # if you use Firefox
+mkcert -install
+mkcert localhost
+
+npm i http-server -g
+http-server ./ --ssl true --cert localhost.pem --key localhost-key.pem
+```
+
+- [Ref Link using mkcert](https://web.dev/how-to-use-local-https/)
 
 ### Create new Slack app
 - Create a new Slack app from this page: https://api.slack.com/apps

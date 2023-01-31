@@ -4,7 +4,8 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "webserver": "http-server ./ --ssl true --cert localhost.pem --key localhost-key.pem"
   },
   "author": "",
   "license": "ISC",
