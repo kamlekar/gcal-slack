@@ -6,7 +6,7 @@ function calendarEventWatchCallback(req, res) {
   try {
     const subscription = req.body;
 
-    authorize().then(async function (auth) {
+    authorize(req, res).then(async function (auth) {
       const events = await getRunningEvents(auth);
       events.forEach(event => {
         console.log("current event:", event.summary);

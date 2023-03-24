@@ -15,17 +15,11 @@
 
 const fs = require('fs');
 const path = require('path');
-const https = require('https');
 const url = require('url');
-const opn = require('open');
-const destroyer = require('server-destroy');
 
 const { google } = require('googleapis');
 const { HOST } = require('../common/constants');
 const plus = google.plus('v1');
-const { SCOPES } = require('../common/constants');
-
-const PORT = process.env.PORT;
 
 /**
  * To use OAuth2 authentication, we need access to a a CLIENT_ID, CLIENT_SECRET, AND REDIRECT_URI.  To get these credentials for your application, visit https://console.cloud.google.com/apis/credentials.
@@ -53,53 +47,34 @@ google.options({ auth: oauth2Client });
 /**
  * Open an http server to accept the oauth callback. In this simple example, the only request to our webserver is to /callback?code=<code>
  */
-async function authenticate() {
-  return new Promise((resolve, reject) => {
-    // grab the url that will be used for authorization
-    const authorizeUrl = oauth2Client.generateAuthUrl({
-      access_type: 'offline',
-      scope: SCOPES.join(' '),
-    });
-
-    const options = {
-      key: fs.readFileSync('localhost-key.pem'),
-      cert: fs.readFileSync('localhost.pem')
-    };
-
-    const server = https
-      .createServer(options, async (req, res) => {
-        try {
-          if (req.url.indexOf('code=') > -1) {
-            const qs = new url.URL(req.url, HOST)
-              .searchParams;
-            res.end('Authentication successful! Please return to the console.');
-            server.destroy();
-            const { tokens } = await oauth2Client.getToken(qs.get('code'));
-            oauth2Client.credentials = tokens; // eslint-disable-line require-atomic-updates
-            resolve(oauth2Client);
-          }
-        } catch (e) {
-          reject(e);
-        }
-      })
-      .listen(PORT, () => {
-        // open the browser to the authorize url to start the workflow
-        opn(authorizeUrl, { wait: false }).then(cp => cp.unref());
-      });
-    destroyer(server);
+async function authenticate(req, res) {
+  return new Promise(async (resolve, reject) => {
+    try {
+      if (req.url.indexOf('code=') > -1) {
+        const qs = new url.URL(req.url, HOST)
+          .searchParams;
+        const { tokens } = await oauth2Client.getToken(qs.get('code'));
+        oauth2Client.credentials = tokens; // eslint-disable-line require-atomic-updates
+      }
+      resolve(oauth2Client);
+    } catch (e) {
+      reject(e);
+    }
   });
 }
 
-async function runSample() {
-  // retrieve user profile
-  const res = await plus.people.get({ userId: 'me' });
-  console.log(res.data);
-}
+// @NOTE: For reference
+// async function runSample() {
+//   // retrieve user profile
+//   const res = await plus.people.get({ userId: 'me' });
+//   console.log(res.data);
+// }
 
-authenticate()
-  .then(client => runSample(client))
-  .catch(console.error);
+// authenticate()
+//   .then(client => runSample(client))
+//   .catch(console.error);
 
 module.exports = {
-  authorize: authenticate
+  authorize: authenticate,
+  oauth2Client: oauth2Client
 }

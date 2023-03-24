@@ -39,7 +39,7 @@ npm i -g ngrok
 Once installing `ngrok`, try the following to give a random url on HTTPS:
 
 ```
-ngrok http 3000
+ngrok http https://local.integrate.app:3000 --host-header=rewrite
 ```
 
 Copy the generated random HTTPS string URL into `.env` -> `HOST` property. And then run the server using `node .`. Go to ngrok generated url to view the UI.
@@ -56,3 +56,5 @@ node .
 ```
 
 Go to `local.integrate.app:3000` to see the view.
+
+You can also run the app on VScode debugger. Select `webserver` script while debugging.

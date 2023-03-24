@@ -6,9 +6,9 @@ const bodyParser = require('body-parser');
 const https = require('https');
 const fs = require('fs');
 const { initRoutes } = require('./src/routes');
-const { watchCalendarEvents } = require('./src/integrations/calendar/events/watch');
-const { listEvents } = require('./src/integrations/calendar/events/fetch');
-const { authorize } = require('./src/auth/google');
+const { oauth2Client } = require('./src/auth/google');
+const opn = require('open');
+const { SCOPES } = require('./src/common/constants');
 
 // Create express app.
 const app = express();
@@ -20,7 +20,16 @@ const options = {
   cert: fs.readFileSync('localhost.pem')
 };
 
-https.createServer(options, app).listen(PORT);
+https.createServer(options, app).listen(PORT, () => {
+  // grab the url that will be used for authorization
+  const authorizeUrl = oauth2Client.generateAuthUrl({
+    access_type: 'offline',
+    scope: SCOPES.join(' '),
+  });
+
+  // open the browser to the authorize url to start the workflow
+  opn(authorizeUrl, { wait: false }).then(cp => cp.unref());
+});
 
 // Use body parser which we will use to parse request body that sending from client.
 app.use(bodyParser.json());
@@ -29,14 +38,3 @@ app.use(bodyParser.json());
 app.use(express.static(path.join(__dirname, 'client')));
 
 initRoutes(app);
-
-authorize().then(async function (auth) {
-  const events = await listEvents(auth);
-  console.log('Upcoming 10 events:');
-  events.map((event, i) => {
-    const start = event.start.dateTime || event.start.date;
-    console.log(`${start} - ${event.summary}`);
-  });
-
-  watchCalendarEvents(auth);
-}).catch(console.error);
