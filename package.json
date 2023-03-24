@@ -5,7 +5,7 @@
   "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "webserver": "http-server ./ --ssl true --cert localhost.pem --key localhost-key.pem"
+    "webserver": "node ."
   },
   "author": "",
   "license": "ISC",
