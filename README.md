@@ -21,9 +21,11 @@ mkcert -install
 mkcert localhost
 ```
 
+Add `local.integrate.app` as alias to `127.0.0.1` in `/etc/hosts` on mac/linux. Similar setup steps can be found online for Windows OS.
 Go to `local.integrate.app:3000` to see the view.
 
-- [Ref Link using mkcert](https://web.dev/how-to-use-local-https/)
+- [Ref link using mkcert](https://web.dev/how-to-use-local-https/)
+- [Ref link for updating host file](https://www.howtogeek.com/27350/beginner-geek-how-to-edit-your-hosts-file/)
 
 
 <b>OR</b>
