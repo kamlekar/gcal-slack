@@ -1,6 +1,6 @@
 const { setStatus, clearStatus } = require('../../slack/status/index');
-const { authorize } = require('../auth/auth');
-const { getRunningEvents } = require('../events/fetch');
+const { authorize } = require('../../../auth/google');
+const { getRunningEvents } = require('./fetch');
 
 function calendarEventWatchCallback(req, res) {
   try {

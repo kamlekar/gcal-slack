@@ -1,4 +1,4 @@
-const { calendarEventWatchCallback } = require('./google/events/triggers');
+const { calendarEventWatchCallback } = require('./integrations/calendar/events/triggers');
 const { debounce } = require('lodash');
 
 function initRoutes(app) {

@@ -6,9 +6,9 @@ const bodyParser = require('body-parser');
 const https = require('https');
 const fs = require('fs');
 const { initRoutes } = require('./src/routes');
-const { watchCalendarEvents } = require('./src/google/events/watch');
-const { listEvents } = require('./src/google/events/fetch');
-const { authorize } = require('./src/google/auth/auth');
+const { watchCalendarEvents } = require('./src/integrations/calendar/events/watch');
+const { listEvents } = require('./src/integrations/calendar/events/fetch');
+const { authorize } = require('./src/auth/google');
 
 // Create express app.
 const app = express();
