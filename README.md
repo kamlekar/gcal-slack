@@ -16,12 +16,13 @@ To run on HTTPS locally, we can use `ngrok`. Once installing `ngrok`, try the fo
 ngrok http 3000
 ```
 
-Copy the generated random HTTPS string URL into `src/common/constants.js` -> `HOST` property.
+Copy the generated random HTTPS string URL into `.env` -> `HOST` property. And then run the server using `node .`. Go to ngrok generated url to view the UI.
 
 <b>OR</b>
 
 Generate SSL certificate on localhost and run on a [http-server](https://www.npmjs.com/package/http-server)
 
+> Disclaimer: This runs temporary to check something quickly. Not much important as ngrok for now.
 
 ```
 brew install mkcert
@@ -34,6 +35,8 @@ http-server ./ --ssl true --cert localhost.pem --key localhost-key.pem
 ```
 
 - [Ref Link using mkcert](https://web.dev/how-to-use-local-https/)
+
+Go to `local.integrate.app:3000` to see the view.
 
 ### Create new Slack app
 - Create a new Slack app from this page: https://api.slack.com/apps
