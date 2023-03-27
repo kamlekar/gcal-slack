@@ -5,6 +5,20 @@ const opn = require('open');
 const { google } = require('googleapis');
 const { HOST, TOKEN_PATH, CREDENTIALS_PATH, SCOPES } = require('../common/constants');
 
+function authorize(req, callback) {
+  getCredentials().then((credentials) => {
+    const { client_secret, client_id, redirect_uris } = credentials;
+    const oAuth2Client = new google.auth.OAuth2(
+      client_id, client_secret, redirect_uris[0]);
+    getToken(req, oAuth2Client).then((token) => {
+      oAuth2Client.setCredentials(JSON.stringify(token));
+      callback(oAuth2Client);
+    }).catch((oAuth2Client) => {
+      goToAuthUrl(oAuth2Client);
+    });
+  }).catch((credentialsError) => console.log('Error loading client secret file:', credentialsError));
+}
+
 function getCredentials() {
   return new Promise((resolve, reject) => {
     fs.readFile(CREDENTIALS_PATH, (err, content) => {
@@ -28,8 +42,7 @@ function getToken(req, oAuth2Client) {
       if (noTokenError) {
         if (isAuthCodeAvailable(req)) {
           getNewToken(req, oAuth2Client, (newToken) => {
-            oAuth2Client.setCredentials(JSON.stringify(newToken));
-            resolve(oAuth2Client);
+            resolve(newToken);
           });
         }
         else {
@@ -37,24 +50,14 @@ function getToken(req, oAuth2Client) {
         }
       }
       else {
-        oAuth2Client.setCredentials(JSON.stringify(token));
-        resolve(oAuth2Client);
+        resolve(JSON.parse(token.toString()));
       }
     });
   })
 }
 
-function authorize(req, callback) {
-  getCredentials().then((credentials) => {
-    const { client_secret, client_id, redirect_uris } = credentials;
-    const oAuth2Client = new google.auth.OAuth2(
-      client_id, client_secret, redirect_uris[0]);
-    getToken(req, oAuth2Client).then((oAuth2Client) => {
-      callback(oAuth2Client);
-    }).catch((oAuth2Client) => {
-      goToAuthUrl(oAuth2Client);
-    });
-  }).catch((credentialsError) => console.log('Error loading client secret file:', credentialsError));
+function isAuthCodeAvailable(req) {
+  return (req.url.indexOf('code=') > -1);
 }
 
 function getNewToken(req, oAuth2Client, callback) {
@@ -62,7 +65,6 @@ function getNewToken(req, oAuth2Client, callback) {
   const code = qs.get('code')
   oAuth2Client.getToken(code, (err, token) => {
     if (err) return console.error('Error retrieving access token', err);
-    oAuth2Client.setCredentials(token);
     // Store the token to disk for later program executions
     fs.writeFile(TOKEN_PATH, JSON.stringify(token), (err) => {
       if (err) return console.error(err);
@@ -70,10 +72,6 @@ function getNewToken(req, oAuth2Client, callback) {
       callback(token);
     });
   });
-}
-
-function isAuthCodeAvailable(req) {
-  return (req.url.indexOf('code=') > -1);
 }
 
 function goToAuthUrl(authClient) {
