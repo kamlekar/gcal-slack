@@ -1,54 +1,94 @@
 const fs = require('fs');
 const url = require('url');
+const opn = require('open');
 
 const { google } = require('googleapis');
-const { HOST } = require('../common/constants');
+const { HOST, TOKEN_PATH, CREDENTIALS_PATH, SCOPES } = require('../common/constants');
 
-// If modifying these scopes, delete token.json.
-const TOKEN_PATH = 'token.json';
-const CREDENTIALS_PATH = 'credentials.json';
+function getCredentials() {
+  return new Promise((resolve, reject) => {
+    fs.readFile(CREDENTIALS_PATH, (err, content) => {
+      if (err) {
+        reject(err);
+      }
+      else {
+        const credentials = JSON.parse(content);
+
+        const { client_secret, client_id, redirect_uris } = credentials.web;
+        resolve({ client_secret, client_id, redirect_uris });
+      }
+    });
+  })
+}
+
+function getToken(req, oAuth2Client) {
+  return new Promise((resolve, reject) => {
+    // Check if we have previously stored a token.
+    fs.readFile(TOKEN_PATH, (noTokenError, token) => {
+      if (noTokenError) {
+        if (isAuthCodeAvailable(req)) {
+          getNewToken(req, oAuth2Client, (newToken) => {
+            oAuth2Client.setCredentials(JSON.stringify(newToken));
+            resolve(oAuth2Client);
+          });
+        }
+        else {
+          reject(oAuth2Client);
+        }
+      }
+      else {
+        oAuth2Client.setCredentials(JSON.stringify(token));
+        resolve(oAuth2Client);
+      }
+    });
+  })
+}
 
 function authorize(req, callback) {
-  // Load client secrets from a local file.
-  fs.readFile(CREDENTIALS_PATH, (err, content) => {
-    if (err) return console.log('Error loading client secret file:', err);
-    const credentials = JSON.parse(content);
-
-    const { client_secret, client_id, redirect_uris } = credentials.web;
+  getCredentials().then((credentials) => {
+    const { client_secret, client_id, redirect_uris } = credentials;
     const oAuth2Client = new google.auth.OAuth2(
       client_id, client_secret, redirect_uris[0]);
-    // Check if we have previously stored a token.
-    fs.readFile(TOKEN_PATH, (err, token) => {
-      if (err) return getNewToken(req, oAuth2Client, callback);
-      oAuth2Client.setCredentials(JSON.parse(token));
+    getToken(req, oAuth2Client).then((oAuth2Client) => {
       callback(oAuth2Client);
+    }).catch((oAuth2Client) => {
+      goToAuthUrl(oAuth2Client);
     });
-  });
-
+  }).catch((credentialsError) => console.log('Error loading client secret file:', credentialsError));
 }
 
 function getNewToken(req, oAuth2Client, callback) {
-  if (req.url.indexOf('code=') > -1) {
-    const qs = new url.URL(req.url, HOST)
-      .searchParams;
-    const code = qs.get('code')
-    oAuth2Client.getToken(code, (err, token) => {
-      if (err) return console.error('Error retrieving access token', err);
-      oAuth2Client.setCredentials(token);
-      // Store the token to disk for later program executions
-      fs.writeFile(TOKEN_PATH, JSON.stringify(token), (err) => {
-        if (err) return console.error(err);
-        console.log('Token stored to', TOKEN_PATH);
-      });
-      callback(oAuth2Client);
+  const qs = new url.URL(req.url, HOST).searchParams;
+  const code = qs.get('code')
+  oAuth2Client.getToken(code, (err, token) => {
+    if (err) return console.error('Error retrieving access token', err);
+    oAuth2Client.setCredentials(token);
+    // Store the token to disk for later program executions
+    fs.writeFile(TOKEN_PATH, JSON.stringify(token), (err) => {
+      if (err) return console.error(err);
+      console.log('Token stored to', TOKEN_PATH);
+      callback(token);
     });
-  }
-  else {
-    callback(oAuth2Client);
-  }
+  });
+}
 
+function isAuthCodeAvailable(req) {
+  return (req.url.indexOf('code=') > -1);
+}
+
+function goToAuthUrl(authClient) {
+  // grab the url that will be used for authorization
+  const authorizeUrl = authClient.generateAuthUrl({
+    access_type: 'offline',
+    scope: SCOPES.join(' '),
+    include_granted_scopes: true
+  });
+
+  // open the browser to the authorize url to start the workflow
+  opn(authorizeUrl, { wait: false }).then(cp => cp.unref());
 }
 
 module.exports = {
-  authorize
+  authorize,
+  goToAuthUrl
 }

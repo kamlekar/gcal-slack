@@ -6,9 +6,6 @@ const bodyParser = require('body-parser');
 const https = require('https');
 const fs = require('fs');
 const { initRoutes } = require('./src/routes');
-const { oauth2Client } = require('./src/auth/google');
-const opn = require('open');
-const { SCOPES } = require('./src/common/constants');
 
 // Create express app.
 const app = express();

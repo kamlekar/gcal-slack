@@ -1,22 +1,14 @@
-const { authorize } = require('../auth/google');
+const { authorize, goToAuthUrl } = require('../auth/google');
+const fs = require('fs');
+const { TOKEN_PATH } = require('./constants');
 
 function authCheck(req, res) {
   return new Promise((resolve, reject) => {
     authorize(req, function (authClient) {
-      authClient.off('tokens', () => { });
-      authClient.on('tokens', (tokens) => {
-        if (tokens.refresh_token) {
-          // grab the url that will be used for authorization
-          const authorizeUrl = authClient.generateAuthUrl({
-            access_type: 'offline',
-            scope: SCOPES.join(' '),
-            include_granted_scopes: true
-          });
-
-          // open the browser to the authorize url to start the workflow
-          opn(authorizeUrl, { wait: false }).then(cp => cp.unref());
+      hasAuthenticated(authClient).then((isAuthenticated) => {
+        if (!isAuthenticated) {
+          goToAuthUrl(authClient);
         }
-        console.log(tokens.access_token);
       });
 
       resolve(authClient);
@@ -24,6 +16,28 @@ function authCheck(req, res) {
   });
 }
 
+function hasAuthenticated(authClient) {
+  return new Promise((resolve, reject) => {
+    authClient.off('tokens', () => { });
+    authClient.on('tokens', (tokens) => {
+      if (tokens.refresh_token) {
+        resolve(true);
+      }
+      else {
+        fs.readFile(TOKEN_PATH, (err, token) => {
+          if (err) {
+            resolve(false);
+          }
+          else {
+            resolve(true);
+          }
+        });
+      }
+    });
+  })
+}
+
 module.exports = {
-  authCheck
+  authCheck,
+  hasAuthenticated
 }
