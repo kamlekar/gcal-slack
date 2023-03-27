@@ -20,16 +20,7 @@ const options = {
   cert: fs.readFileSync('localhost.pem')
 };
 
-https.createServer(options, app).listen(PORT, () => {
-  // grab the url that will be used for authorization
-  const authorizeUrl = oauth2Client.generateAuthUrl({
-    access_type: 'offline',
-    scope: SCOPES.join(' '),
-  });
-
-  // open the browser to the authorize url to start the workflow
-  opn(authorizeUrl, { wait: false }).then(cp => cp.unref());
-});
+https.createServer(options, app).listen(PORT);
 
 // Use body parser which we will use to parse request body that sending from client.
 app.use(bodyParser.json());

@@ -1,19 +1,9 @@
 const { calendarEventWatchCallback } = require('./integrations/calendar/events/triggers');
 const { debounce } = require('lodash');
-const { authorize } = require('./auth/google');
 const { watchCalendarEvents } = require('./integrations/calendar/events/watch');
 const { listEvents } = require('./integrations/calendar/events/fetch');
-
-function authCheck(req, res) {
-  return new Promise((resolve, reject) => {
-    authorize(req, res).then(async function (authClient) {
-      resolve(authClient);
-    }).catch((e) => {
-      console.error(e);
-      res.sendFile(__dirname + '/pages/wrong.html');
-    });
-  });
-}
+const { driveRoutes } = require('./integrations/drive');
+const { authCheck } = require('./common/route-helper');
 
 function initRoutes(app) {
   app.post('/calendar_events', debounce(calendarEventWatchCallback, 1000));
@@ -34,6 +24,8 @@ function initRoutes(app) {
     });
   });
   app.get('/upload', (req, res) => res.sendFile(__dirname + '/pages/upload.html'));
+
+  driveRoutes(app);
 
   return app;
 }
