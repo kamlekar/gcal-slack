@@ -28,7 +28,7 @@ function authorize(req, callback) {
 }
 
 function getNewToken(req, oAuth2Client, callback) {
-  if (req.url.indexOf('code=') > -1) {
+  if (req && req.url.indexOf('code=') > -1) {
     const qs = new url.URL(req.url, HOST)
       .searchParams;
     const code = qs.get('code')
