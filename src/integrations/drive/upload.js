@@ -17,7 +17,7 @@ const uploadFile = async (req, res, oauth2Client) => {
       media: media,
     });
     console.log('File Id:', file.data.id);
-    return file.data.id;
+    return file;
   } catch (err) {
     // TODO(developer) - Handle error
     throw err;

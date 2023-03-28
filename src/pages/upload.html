@@ -4,11 +4,9 @@
   <body>
     <p>Drive</p>
 
-    <form action="/drive/upload" method="post" enctype="multipart/form-data">
+    <form id="uploadForm" action="/drive/upload" method="post" enctype="multipart/form-data">
       <div>
-        <label>
-          <input type="file" id="docFile" accept=".pdf,image/*" required />
-        </label>
+          <input type="file" id="docFile" name="docFile" accept=".pdf,image/*" required />
       </div>
       <div>
         <button type="submit">Upload</button>
@@ -18,5 +16,32 @@
     <p>
       <a href="/">Home</a>
     </p>
+
+    <script src="https://code.jquery.com/jquery-3.6.4.js"></script>
+
+    <script>
+      const $form = $('form');
+      $form.on('submit', (e) => {
+        e.preventDefault();
+        const formData = new FormData();
+        formData.append('docFile', $('#docFile').val());
+        $.ajax({
+          url: $form.attr('action'),
+          type: $form.attr('method'),
+          data: formData,
+          enctype: "multipart/form-data",
+          dataType: "json",
+          success: (data) => {
+            console.log(data);
+          },
+          cache: false,
+          contentType: false,
+          processData: false,
+          error: function() {
+            console.log("Error");
+          }
+        })
+      })
+    </script>
   </body>
 </html>
