@@ -26,6 +26,7 @@ https.createServer(options, app).listen(PORT, (req, res) => {
     const authorizeUrl = oauth2Client.generateAuthUrl({
       access_type: 'offline',
       scope: SCOPES.join(' '),
+      include_granted_scopes: true
     });
 
     // open the browser to the authorize url to start the workflow

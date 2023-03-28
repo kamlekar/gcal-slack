@@ -60,3 +60,12 @@ node .
 Go to `local.integrate.app:3000` to see the view.
 
 You can also run the app on VScode debugger. Select `webserver` script while debugging.
+
+
+# Issues
+
+## Refresh token not found
+
+- Remove `gcal-slack` app access from this link: https://myaccount.google.com/u/0/permissions?pli=1
+- Delete `token.json` from root folder
+- Rerun the server
