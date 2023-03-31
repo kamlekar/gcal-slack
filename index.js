@@ -1,17 +1,14 @@
 const path = require('path');
 require('dotenv').config();
 const process = require('process');
-const express = require('express');
-const bodyParser = require('body-parser');
 const https = require('https');
 const fs = require('fs');
 const { initRoutes } = require('./src/routes');
 const opn = require('open');
 const { SCOPES } = require('./src/common/constants');
 const { authorize } = require('./src/auth/google');
+const { app } = require('./app');
 
-// Create express app.
-const app = express();
 
 const PORT = process.env.PORT;
 
@@ -34,10 +31,5 @@ https.createServer(options, app).listen(PORT, (req, res) => {
   })
 });
 
-// Use body parser which we will use to parse request body that sending from client.
-app.use(bodyParser.json());
-
-// We will store our client files in ./client directory.
-app.use(express.static(path.join(__dirname, 'client')));
 
 initRoutes(app);

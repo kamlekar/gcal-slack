@@ -69,3 +69,5 @@ You can also run the app on VScode debugger. Select `webserver` script while deb
 - Remove `gcal-slack` app access from this link: https://myaccount.google.com/u/0/permissions?pli=1
 - Delete `token.json` from root folder
 - Rerun the server
+
+Further reading: [link](https://stackoverflow.com/a/10857806/1577396)

@@ -6,6 +6,9 @@
 
     <form id="uploadForm" action="/drive/upload" method="post" enctype="multipart/form-data">
       <div>
+        <input type="date" name="visitDate" required />
+      </div>
+      <div>
           <input type="file" id="docFile" name="docFile" accept=".pdf,image/*" required />
       </div>
       <div>
@@ -20,28 +23,28 @@
     <script src="https://code.jquery.com/jquery-3.6.4.js"></script>
 
     <script>
-      const $form = $('form');
-      $form.on('submit', (e) => {
-        e.preventDefault();
-        const formData = new FormData();
-        formData.append('docFile', $('#docFile').val());
-        $.ajax({
-          url: $form.attr('action'),
-          type: $form.attr('method'),
-          data: formData,
-          enctype: "multipart/form-data",
-          dataType: "json",
-          success: (data) => {
-            console.log(data);
-          },
-          cache: false,
-          contentType: false,
-          processData: false,
-          error: function() {
-            console.log("Error");
-          }
-        })
-      })
+      $(document).ready(function() {
+        $('form').submit(function(event) {
+          event.preventDefault();
+
+          const formData = new FormData();
+          formData.append('docFile', $('input[type=file]')[0].files[0]);
+          formData.append('visitDate', $('input[name=visitDate]').val());
+          $.ajax({
+            url: '/drive/upload',
+            type: 'POST',
+            data: formData,
+            processData: false,
+            contentType: false,
+            success: function(data) {
+              console.log('File uploaded successfully.');
+            },
+            error: function(jqXHR, textStatus, errorThrown) {
+              console.error('Error uploading file: ' + errorThrown);
+            }
+          });
+        });
+      });
     </script>
   </body>
 </html>
