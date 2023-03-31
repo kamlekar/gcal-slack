@@ -71,3 +71,11 @@ You can also run the app on VScode debugger. Select `webserver` script while deb
 - Rerun the server
 
 Further reading: [link](https://stackoverflow.com/a/10857806/1577396)
+
+
+# Using Firebase to deploy
+
+```
+npm install -g firebase-tools
+firebase login
+firebase deploy --only hosting:integator
