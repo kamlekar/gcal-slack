@@ -1,5 +1,6 @@
 const { google } = require('googleapis');
 const fs = require('fs');
+const moment = require('moment');
 
 const uploadFile = async (req, res, oauth2Client) => {
   // check if file was uploaded
@@ -8,11 +9,16 @@ const uploadFile = async (req, res, oauth2Client) => {
   }
 
   const inputFile = req.files.docFile;
+  const fileExtension = inputFile.name.match(/\.[^\.]+$/)[0];
+  const { fileType, patientName, visitDate } = req.body;
+  const visitedDate = moment(visitDate, 'YYYY-MM-DD');
+  const visitedDay = visitedDate.format('D');
+  const visitedMonth = visitedDate.format('YYYY-MM-MMM');
   const service = google.drive({ version: 'v3', auth: oauth2Client });
   try {
-    const folderId = await getFolderId(`Health/monthwise/April`, service);
+    const folderId = await getFolderId(`Health/${patientName}/monthwise/${visitedMonth}`, service);
     const requestBody = {
-      name: 'health/photo.jpg',
+      name: `${visitedDay}-${fileType}${fileExtension}`,
       fields: ['id', 'name'],
       parents: [folderId]
     };
@@ -46,7 +52,6 @@ const getFolderInfo = async (parentFolderInfo, folderName, service) => {
 
   try {
     const parentFolderId = parentFolderInfo?.id;
-    const parentFolderName = parentFolderInfo?.name;
 
     // Search for the parent folder and the subfolder
     const folderResponse = parentFolderInfo ? await service.files.list({

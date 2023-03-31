@@ -2,14 +2,42 @@
   <head>
   </head>
   <body>
-    <p>Drive</p>
+    <h2>Drive</h2>
 
     <form id="uploadForm" action="/drive/upload" method="post" enctype="multipart/form-data">
       <div>
-        <input type="date" name="visitDate" required />
+        <fieldset>
+          <label>Visit Date</label>
+          <input type="date" name="visitDate" required />
+        </fieldset>
       </div>
       <div>
+        <fieldset>
+        <label>Patient Name</label>
+        <select name="patientName">
+          <option value="venkateshwar">Venkateshwar</option>
+          <option value="saatvik">Saatvik</option>
+          <option value="supriya">Supriya</option>
+          <option value="mammu">Mammu</option>
+          <option value="baba">Baba</option>
+        </select>
+      </fieldset>
+      </div>
+      <div>
+        <fieldset>
+          <label>Upload File</label>
           <input type="file" id="docFile" name="docFile" accept=".pdf,image/*" required />
+        </fieldset>
+      </div>
+      <div>
+        <fieldset>
+        <label>File type</label>
+        <select name="fileType">
+          <option value="prescription">Prescription</option>
+          <option value="bill">Bill</option>
+          <option value="report">Report</option>
+        </select>
+      </fieldset>
       </div>
       <div>
         <button type="submit">Upload</button>
@@ -27,9 +55,7 @@
         $('form').submit(function(event) {
           event.preventDefault();
 
-          const formData = new FormData();
-          formData.append('docFile', $('input[type=file]')[0].files[0]);
-          formData.append('visitDate', $('input[name=visitDate]').val());
+          const formData = new FormData($('form')[0]);
           $.ajax({
             url: '/drive/upload',
             type: 'POST',
