@@ -15,10 +15,11 @@ const uploadFile = async (req, res, oauth2Client) => {
 
   try {
     const file = await storeFileOnDrive(inputFile, req.body, service);
-    await storeShortcutsOnDrive(file, req.body, service);
+    const ailmentShortcuts = await storeAilmentsShortcutsOnDrive(file, req.body, service);
+    const hospitalShortcut = await storeHospitalShortcutOnDrive(file, req.body, service);
 
     console.log('File Id:', file.id);
-    return file;
+    return { file, ailmentShortcuts, hospitalShortcut };
   } catch (err) {
     // TODO(developer) - Handle error
     throw err;
@@ -47,17 +48,33 @@ const storeFileOnDrive = async (inputFile, body, service) => {
   return file.data;
 }
 
-const storeShortcutsOnDrive = async (file, body, service) => {
+const storeAilmentsShortcutsOnDrive = async (file, body, service) => {
   const { patientName, visitDate, ailments } = body;
   const { month: visitedMonth } = quickDates(visitDate);
   const ailmentsTokens = commaSeparatedValues(ailments);
   try {
-    const shortcuts = await ailmentsTokens.reduce(async (previousAilment, ailment) => {
-      await previousAilment;
+    const shortcuts = [];
+    const lastShortcut = await ailmentsTokens.reduce(async (previousAilment, ailment) => {
+      const previousShortcut = await previousAilment;
+      shortcuts.push(previousShortcut);
       const drivePath = `Health/${patientName}/ailments/${ailment}/${visitedMonth}`;
       return createShortcut(file, drivePath, service);
     }, Promise.resolve());
+    shortcuts.push(lastShortcut);
     return shortcuts;
+  }
+  catch (ex) {
+    console.log(ex);
+  }
+};
+
+const storeHospitalShortcutOnDrive = async (file, body, service) => {
+  const { patientName, visitDate, hospital } = body;
+  const { month: visitedMonth } = quickDates(visitDate);
+  try {
+    const drivePath = `Health/${patientName}/hospital/${hospital}/${visitedMonth}`;
+    const hospitalShortcut = await createShortcut(file, drivePath, service);
+    return hospitalShortcut;
   }
   catch (ex) {
     console.log(ex);
