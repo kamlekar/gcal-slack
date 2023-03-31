@@ -1,6 +1,7 @@
 const { google } = require('googleapis');
 const fs = require('fs');
 const moment = require('moment');
+const { commaSeparatedValues } = require('../../common/utils');
 
 const uploadFile = async (req, res, oauth2Client) => {
   // check if file was uploaded
@@ -9,28 +10,14 @@ const uploadFile = async (req, res, oauth2Client) => {
   }
 
   const inputFile = req.files.docFile;
-  const fileExtension = inputFile.name.match(/\.[^\.]+$/)[0];
-  const { fileType, patientName, visitDate } = req.body;
-  const visitedDate = moment(visitDate, 'YYYY-MM-DD');
-  const visitedDay = visitedDate.format('D');
-  const visitedMonth = visitedDate.format('YYYY-MM-MMM');
+
   const service = google.drive({ version: 'v3', auth: oauth2Client });
+
   try {
-    const folderId = await getFolderId(`Health/${patientName}/monthwise/${visitedMonth}`, service);
-    const requestBody = {
-      name: `${visitedDay}-${fileType}${fileExtension}`,
-      fields: ['id', 'name'],
-      parents: [folderId]
-    };
-    const media = {
-      mimeType: inputFile.mimeType,
-      body: fs.createReadStream(inputFile.tempFilePath),
-    };
-    const file = await service.files.create({
-      requestBody,
-      media: media,
-    });
-    console.log('File Id:', file.data.id);
+    const file = await storeFileOnDrive(inputFile, req.body, service);
+    await storeShortcutsOnDrive(file, req.body, service);
+
+    console.log('File Id:', file.id);
     return file;
   } catch (err) {
     // TODO(developer) - Handle error
@@ -38,13 +25,73 @@ const uploadFile = async (req, res, oauth2Client) => {
   }
 }
 
+const storeFileOnDrive = async (inputFile, body, service) => {
+  const { fileType, patientName, visitDate } = body;
+  const fileExtension = inputFile.name.match(/\.[^\.]+$/)[0];
+  const { day: visitedDay, month: visitedMonth } = quickDates(visitDate);
+  const drivePath = `Health/${patientName}/monthwise/${visitedMonth}`;
+  const folderId = await getFolderId(drivePath, service);
+  const requestBody = {
+    name: `${visitedDay}-${fileType}${fileExtension}`,
+    fields: ['id', 'name', 'mimeType'],
+    parents: [folderId]
+  };
+  const media = {
+    mimeType: inputFile.mimeType,
+    body: fs.createReadStream(inputFile.tempFilePath),
+  };
+  const file = await service.files.create({
+    requestBody,
+    media: media,
+  });
+  return file.data;
+}
+
+const storeShortcutsOnDrive = async (file, body, service) => {
+  const { patientName, visitDate, ailments } = body;
+  const { month: visitedMonth } = quickDates(visitDate);
+  const ailmentsTokens = commaSeparatedValues(ailments);
+  try {
+    const shortcuts = await ailmentsTokens.reduce(async (previousAilment, ailment) => {
+      await previousAilment;
+      const drivePath = `Health/${patientName}/ailments/${ailment}/${visitedMonth}`;
+      return createShortcut(file, drivePath, service);
+    }, Promise.resolve());
+    return shortcuts;
+  }
+  catch (ex) {
+    console.log(ex);
+  }
+};
+
+const createShortcut = async (file, drivePath, service) => {
+  const folderId = await getFolderId(drivePath, service);
+
+  const shortcutResponse = await service.files.create({
+    requestBody: {
+      name: file.name,
+      mimeType: 'application/vnd.google-apps.shortcut',
+      shortcutDetails: {
+        targetId: file.id,
+        targetMimeType: file.mimeType,
+      },
+      parents: [folderId],
+    },
+    fields: ['id', 'name'],
+    supportsAllDrives: true,
+  });
+
+  return shortcutResponse.data;
+}
+
 const getFolderId = async (path, service) => {
   const nestedFolders = path.split("/");
 
   const lastFolderInfo = await nestedFolders.reduce(async (parentFolderInfo, folderName) => {
     const folderInfo = await parentFolderInfo;
-    return await getFolderInfo(folderInfo, folderName, service);
-  }, null)
+    const nestedFolderInfo = getFolderInfo(folderInfo, folderName, service);
+    return nestedFolderInfo;
+  }, Promise.resolve())
   return lastFolderInfo.id;
 }
 
@@ -92,6 +139,13 @@ const getFolderInfo = async (parentFolderInfo, folderName, service) => {
     console.log(ex);
   }
 
+}
+
+const quickDates = (date) => {
+  const momentDate = moment(date, 'YYYY-MM-DD');
+  const day = momentDate.format('D');
+  const month = momentDate.format('YYYY-MM-MMM');
+  return { momentDate, day, month };
 }
 
 module.exports = {
