@@ -1,12 +1,13 @@
 const fs = require('fs');
 const url = require('url');
+const path = require('path');
 
 const { google } = require('googleapis');
 const { HOST } = require('../common/constants');
 
 // If modifying these scopes, delete token.json.
-const TOKEN_PATH = 'token.json';
-const CREDENTIALS_PATH = 'credentials.json';
+const TOKEN_PATH = path.join(process.cwd(), 'token.json');
+const CREDENTIALS_PATH = path.join(process.cwd(), '/credentials.json');
 
 function authorize(req, callback) {
   // Load client secrets from a local file.

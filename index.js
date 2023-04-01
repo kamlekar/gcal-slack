@@ -13,8 +13,8 @@ const { app } = require('./app');
 const PORT = process.env.PORT;
 
 const options = {
-  key: fs.readFileSync('localhost-key.pem'),
-  cert: fs.readFileSync('localhost.pem')
+  key: fs.readFileSync(__dirname + '/localhost-key.pem'),
+  cert: fs.readFileSync(__dirname + '/localhost.pem')
 };
 
 https.createServer(options, app).listen(PORT, (req, res) => {
@@ -33,3 +33,5 @@ https.createServer(options, app).listen(PORT, (req, res) => {
 
 
 initRoutes(app);
+
+module.exports = app;
