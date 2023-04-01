@@ -4,6 +4,8 @@ const { watchCalendarEvents } = require('./integrations/calendar/events/watch');
 const { listEvents } = require('./integrations/calendar/events/fetch');
 const { driveRoutes } = require('./integrations/drive');
 const { authCheck } = require('./common/route-helper');
+const { deleteFile } = require('./common/utils');
+const { TOKEN_PATH } = require('./common/constants');
 
 function initRoutes(app) {
   app.post('/calendar_events', debounce(calendarEventWatchCallback, 1000));
@@ -29,6 +31,11 @@ function initRoutes(app) {
     });
   });
   app.get('/upload', (req, res) => res.sendFile(__dirname + '/pages/upload.html'));
+
+  app.get('/clearToken', async (req, res) => {
+    await deleteFile(TOKEN_PATH);
+    res.end('done');
+  });
 
   driveRoutes(app);
 
