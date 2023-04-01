@@ -6,6 +6,49 @@
       "firebase.json",
       "**/.*",
       "**/node_modules/**"
+    ],
+    "headers": [
+      {
+        "source": "/",
+        "headers": [
+          {
+            "key": "HOST",
+            "value": "${HOST}"
+          },
+          {
+            "key": "PORT",
+            "value": "${PORT}"
+          },
+          {
+            "key": "SLACK_API_URL",
+            "value": "${SLACK_API_URL}"
+          },
+          {
+            "key": "SLACK_CLIENT_ID",
+            "value": "${SLACK_CLIENT_ID}"
+          },
+          {
+            "key": "SLACK_CLIENT_SECRET",
+            "value": "${SLACK_CLIENT_SECRET}"
+          },
+          {
+            "key": "SLACK_SIGNING_SECRET",
+            "value": "${SLACK_SIGNING_SECRET}"
+          },
+          {
+            "key": "SLACK_BOT_TOKEN",
+            "value": "${SLACK_BOT_TOKEN}"
+          },
+          {
+            "key": "SLACK_APP_TOKEN",
+            "value": "${SLACK_APP_TOKEN}"
+          },
+          {
+            "key": "SLACK_USER_TOKEN",
+            "value": "${SLACK_USER_TOKEN}"
+          }
+        ]
+      }
     ]
   }
 }
