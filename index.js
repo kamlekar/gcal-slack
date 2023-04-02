@@ -5,11 +5,12 @@ const https = require('https');
 const fs = require('fs');
 const { initRoutes } = require('./src/routes');
 const opn = require('open');
-const { SCOPES } = require('./src/common/constants');
+const { SCOPES, TOKEN_PATH } = require('./src/common/constants');
 const { authorize } = require('./src/auth/google');
 const { app } = require('./app');
 const { isTokenUnavailable } = require('./src/common/route-helper');
 const { auth } = require('./src/auth');
+const { deleteFile } = require('./src/common/utils');
 
 
 const PORT = process.env.PORT;
@@ -29,6 +30,7 @@ https.createServer(options, (req, res) => {
     auth.setClient(oauth2Client);
     const tokenUnavailable = await isTokenUnavailable();
     if (oauth2Client.isTokenExpiring() || tokenUnavailable) {
+      await deleteFile(TOKEN_PATH);
       // grab the url that will be used for authorization
       const authorizeUrl = oauth2Client.generateAuthUrl({
         access_type: 'offline',
