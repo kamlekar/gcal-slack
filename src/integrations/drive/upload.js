@@ -11,7 +11,13 @@ const uploadFile = async (req, res, oauth2Client) => {
 
   const inputFile = req.files.docFile;
 
-  const service = google.drive({ version: 'v3', auth: oauth2Client });
+  const service = google.drive({
+    version: 'v3',
+    params: {
+      key: process.env.GOOGLE_API_KEY
+    },
+    auth: oauth2Client
+  });
 
   try {
     const file = await storeFileOnDrive(inputFile, req.body, service);

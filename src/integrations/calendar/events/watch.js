@@ -8,7 +8,13 @@ let channelResourceId;
 // Responsible to initiate trigger if any event is created/updated/deleted 
 // In Google calendar irrespective of event date
 async function watchCalendarEvents(auth) {
-  const calendar = google.calendar({ version: 'v3', auth });
+  const calendar = google.calendar({
+    version: 'v3',
+    params: {
+      key: process.env.GOOGLE_API_KEY
+    },
+    auth
+  });
   var channel = {
     id: uuidv4(),
     type: 'web_hook',
@@ -27,7 +33,13 @@ async function watchCalendarEvents(auth) {
 }
 
 function stopWatchingCalendarEvents(auth) {
-  const calendar = google.calendar({ version: 'v3', auth });
+  const calendar = google.calendar({
+    version: 'v3',
+    params: {
+      key: process.env.GOOGLE_API_KEY
+    },
+    auth
+  });
 
   calendar.channels.stop({
     id: channelId,
