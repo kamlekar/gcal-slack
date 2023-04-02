@@ -1,5 +1,6 @@
 const path = require('path');
 
+const temp_path = process.env.LOCAL ? process.cwd() : '/tmp';
 module.exports = {
   // use ngrok to have a https url so the web push notifications work
   HOST: `${process.env.HOST}`,
@@ -10,6 +11,6 @@ module.exports = {
     'https://www.googleapis.com/auth/drive'
   ],
   // If modifying these scopes, delete token.json.
-  TOKEN_PATH: path.join('/tmp', 'token.json'),
-  CREDENTIALS_PATH: path.join(process.cwd(), '/credentials.json')
+  TOKEN_PATH: path.join(temp_path, 'token.json'),
+  CREDENTIALS_PATH: path.join(temp_path, '/credentials.json'),
 }

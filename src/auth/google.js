@@ -2,7 +2,7 @@ const fs = require('fs');
 const url = require('url');
 
 const { google } = require('googleapis');
-const { HOST, CREDENTIALS_PATH, TOKEN_PATH } = require('../common/constants');
+const { CREDENTIALS_PATH, TOKEN_PATH } = require('../common/constants');
 
 
 
@@ -14,10 +14,15 @@ function authorize(req, callback) {
 
     const { client_secret, client_id, redirect_uris } = credentials.web;
     const oAuth2Client = new google.auth.OAuth2(
-      client_id, client_secret, redirect_uris[0]);
+      client_id, client_secret, redirect_uris[0]
+    );
+    console.log('token_path is:', TOKEN_PATH);
     // Check if we have previously stored a token.
     fs.readFile(TOKEN_PATH, (err, token) => {
-      if (err) return getNewToken(req, oAuth2Client, callback);
+      if (err) {
+        console.log(err);
+        return getNewToken(req, oAuth2Client, callback);
+      }
       oAuth2Client.setCredentials(JSON.parse(token));
       callback(oAuth2Client);
     });
@@ -26,8 +31,9 @@ function authorize(req, callback) {
 }
 
 function getNewToken(req, oAuth2Client, callback) {
+  console.log('hostname is:', req.headers.host);
   if (req && req.url.indexOf('code=') > -1) {
-    const qs = new url.URL(req.url, HOST)
+    const qs = new url.URL(req.url, 'https://' + req.headers.host)
       .searchParams;
     const code = qs.get('code')
     oAuth2Client.getToken(code, (err, token) => {
