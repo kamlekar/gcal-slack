@@ -5,7 +5,8 @@
   "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\"",
-    "webserver": "nodemon ."
+    "webserver": "nodemon .",
+    "vercel:dev": "vercel dev"
   },
   "author": "",
   "license": "ISC",
