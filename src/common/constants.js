@@ -10,6 +10,6 @@ module.exports = {
     'https://www.googleapis.com/auth/drive'
   ],
   // If modifying these scopes, delete token.json.
-  TOKEN_PATH: path.join(process.cwd(), 'token.json'),
+  TOKEN_PATH: path.join('/tmp', 'token.json'),
   CREDENTIALS_PATH: path.join(process.cwd(), '/credentials.json')
 }
