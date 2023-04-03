@@ -12,9 +12,9 @@ function authorize(req, callback) {
     if (err) return console.log('Error loading client secret file:', err);
     const credentials = JSON.parse(content);
 
-    const { client_secret, client_id, redirect_uris } = credentials.web;
+    const { client_secret, client_id } = credentials.web;
     const oAuth2Client = new google.auth.OAuth2(
-      client_id, client_secret, redirect_uris[0]
+      client_id, client_secret, process.env.GOOGLE_REDIRECT_URI
     );
     console.log('token_path is:', TOKEN_PATH);
     // Check if we have previously stored a token.
@@ -61,9 +61,9 @@ const getAuthClient = async () => {
       if (err) return console.log('Error loading client secret file:', err);
       const credentials = JSON.parse(content);
       console.log('getAuthClient: no error while reading the file');
-      const { client_secret, client_id, redirect_uris } = credentials.web;
+      const { client_secret, client_id } = credentials.web;
       const oAuth2Client = new google.auth.OAuth2(
-        client_id, client_secret, redirect_uris[0]
+        client_id, client_secret, process.env.GOOGLE_REDIRECT_URI
       );
       console.log('getAuthClient: oAuth2Client created');
       resolve(oAuth2Client);
