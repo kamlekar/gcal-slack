@@ -12,5 +12,5 @@ module.exports = {
   ],
   // If modifying these scopes, delete token.json.
   TOKEN_PATH: path.join(temp_path, 'token.json'),
-  CREDENTIALS_PATH: path.join(temp_path, '/credentials.json'),
+  CREDENTIALS_PATH: path.join(process.cwd(), '/credentials.json'),
 }
