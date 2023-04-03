@@ -1,5 +1,6 @@
 const fs = require('fs');
 const url = require('url');
+const os = require('os');
 
 const { google } = require('googleapis');
 const { CREDENTIALS_PATH, TOKEN_PATH } = require('../common/constants');
@@ -40,6 +41,11 @@ function getNewToken(req, oAuth2Client, callback) {
     oAuth2Client.getToken(code, (err, token) => {
       if (err) return console.error('Error retrieving access token', err);
       oAuth2Client.setCredentials(token);
+      if (!fs.existsSync(os.tmpdir())) {
+        console.log("os tmp doesn't exist. creating one");
+        fs.mkdirSync(os.tmpdir());
+        console.log("probably created now");
+      }
       // Store the token to disk for later program executions
       fs.writeFile(TOKEN_PATH, JSON.stringify(token), (err) => {
         if (err) return console.error(err);
