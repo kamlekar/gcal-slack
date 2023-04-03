@@ -12,9 +12,9 @@ function authorize(req, callback) {
     if (err) return console.log('Error loading client secret file:', err);
     const credentials = JSON.parse(content);
 
-    const { client_secret, client_id, redirect_uris } = credentials.web;
+    const { client_secret, client_id } = credentials.web;
     const oAuth2Client = new google.auth.OAuth2(
-      client_id, client_secret, redirect_uris[0]
+      client_id, client_secret, process.env.GOOGLE_REDIRECT_URI
     );
     console.log('token_path is:', TOKEN_PATH);
     // Check if we have previously stored a token.
@@ -32,6 +32,7 @@ function authorize(req, callback) {
 
 function getNewToken(req, oAuth2Client, callback) {
   console.log('hostname is:', req.headers.host);
+  console.log('request url', req.url);
   if (req && req.url.indexOf('code=') > -1) {
     const qs = new url.URL(req.url, 'https://' + req.headers.host)
       .searchParams;
@@ -53,6 +54,21 @@ function getNewToken(req, oAuth2Client, callback) {
 
 }
 
+const getAuthClient = async () => {
+  return new Promise((resolve, reject) => {
+    fs.readFile(CREDENTIALS_PATH, (err, content) => {
+      if (err) return console.log('Error loading client secret file:', err);
+      const credentials = JSON.parse(content);
+      const { client_secret, client_id } = credentials.web;
+      const oAuth2Client = new google.auth.OAuth2(
+        client_id, client_secret, process.env.GOOGLE_REDIRECT_URI
+      );
+      resolve(oAuth2Client);
+    });
+  })
+}
+
 module.exports = {
-  authorize
+  authorize,
+  getAuthClient
 }

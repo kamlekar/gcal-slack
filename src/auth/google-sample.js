@@ -41,7 +41,7 @@ async function saveCredentials(client) {
     client_secret: key.client_secret,
     refresh_token: client.credentials.refresh_token,
     redirect_uris: [
-      'https://local.integrate.app:3000/slack'
+      process.env.GOOGLE_REDIRECT_URI
     ]
   });
   await fs.writeFile(TOKEN_PATH, payload);
