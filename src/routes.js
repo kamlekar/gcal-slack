@@ -5,13 +5,17 @@ const { listEvents } = require('./integrations/calendar/events/fetch');
 const { driveRoutes } = require('./integrations/drive');
 const { deleteFile } = require('./common/utils');
 const { TOKEN_PATH } = require('./common/constants');
-const { authCheck } = require('./common/route-helper');
+const { authCheck, redirectToAuth } = require('./common/route-helper');
+const { getAuthClient } = require('./auth/google');
+
 
 function initRoutes(app) {
   app.post('/calendar_events', debounce(calendarEventWatchCallback, 1000));
 
   app.get('/', (req, res) => authCheck(req, res).then(async (authClient) =>
     res.sendFile(__dirname + '/pages/index.html')));
+
+  app.get('/auth', () => getAuthClient().then(authClient => redirectToAuth(authClient)));
 
   app.get('/integrate', (req, res) => authCheck(req, res).then(async (authClient) => {
     try {

@@ -24,7 +24,7 @@ https.createServer(options, (req, res) => {
   console.log('https: calling authorize now');
   authorize(req, async (oauth2Client) => {
     auth.setClient(oauth2Client);
-    await checkToken();
+    await checkToken(oauth2Client);
 
     app(req, res);
   })
