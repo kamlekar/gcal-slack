@@ -1,3 +1,6 @@
+const fs = require('fs');
+const { CREDENTIALS_PATH } = require("../common/constants");
+
 class Auth {
   constructor() {
     this.client = null;
@@ -13,6 +16,7 @@ class Auth {
 }
 
 const auth = new Auth();
+
 
 module.exports = {
   auth

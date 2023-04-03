@@ -53,6 +53,22 @@ function getNewToken(req, oAuth2Client, callback) {
 
 }
 
+const getAuthClient = async () => {
+  return new Promise((resolve, reject) => {
+    fs.readFile(CREDENTIALS_PATH, (err, content) => {
+      if (err) return console.log('Error loading client secret file:', err);
+      const credentials = JSON.parse(content);
+
+      const { client_secret, client_id, redirect_uris } = credentials.web;
+      const oAuth2Client = new google.auth.OAuth2(
+        client_id, client_secret, redirect_uris[0]
+      );
+      resolve(oAuth2Client);
+    });
+  })
+}
+
 module.exports = {
-  authorize
+  authorize,
+  getAuthClient
 }

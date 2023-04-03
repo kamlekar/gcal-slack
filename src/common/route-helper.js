@@ -35,19 +35,24 @@ const checkToken = async (oauth2Client) => {
     catch (ex) {
       console.log(ex);
     }
-    // grab the url that will be used for authorization
-    const authorizeUrl = oauth2Client.generateAuthUrl({
-      access_type: 'offline',
-      scope: SCOPES.join(' '),
-      include_granted_scopes: true
-    });
-    // open the browser to the authorize url to start the workflow
-    opn(authorizeUrl, { wait: false }).then(cp => cp.unref());
+    redirectToAuth(oauth2Client);
   }
+}
+
+const redirectToAuth = (oauth2Client) => {
+  // grab the url that will be used for authorization
+  const authorizeUrl = oauth2Client.generateAuthUrl({
+    access_type: 'offline',
+    scope: SCOPES.join(' '),
+    include_granted_scopes: true
+  });
+  // open the browser to the authorize url to start the workflow
+  opn(authorizeUrl, { wait: false }).then(cp => cp.unref());
 }
 
 module.exports = {
   authCheck,
   checkToken,
+  redirectToAuth,
   isTokenUnavailable
 }
