@@ -29,7 +29,12 @@ const isTokenUnavailable = async () => {
 const checkToken = async (oauth2Client) => {
   const tokenUnavailable = await isTokenUnavailable();
   if (oauth2Client.isTokenExpiring() || tokenUnavailable) {
-    await deleteFile(TOKEN_PATH);
+    try {
+      await deleteFile(TOKEN_PATH);
+    }
+    catch (ex) {
+      console.log(ex);
+    }
     // grab the url that will be used for authorization
     const authorizeUrl = oauth2Client.generateAuthUrl({
       access_type: 'offline',

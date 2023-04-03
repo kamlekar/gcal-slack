@@ -2,12 +2,13 @@ const fs = require('fs').promises;
 const path = require('path');
 const { authenticate } = require('@google-cloud/local-auth');
 const { google } = require('googleapis');
+const os = require('os');
 const { SCOPES } = require('../common/constants');
 
 // The file token.json stores the user's access and refresh tokens, and is
 // created automatically when the authorization flow completes for the first
 // time.
-const TOKEN_PATH = path.join('/tmp', 'token.json');
+const TOKEN_PATH = path.join(os.tmpdir(), 'token.json');
 const CREDENTIALS_PATH = __dirname + '/credentials.json';
 
 /**
