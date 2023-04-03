@@ -12,7 +12,8 @@ const { getAuthClient } = require('./auth/google');
 function initRoutes(app) {
   app.post('/calendar_events', debounce(calendarEventWatchCallback, 1000));
 
-  app.get('/', (req, res) => res.sendFile(__dirname + '/pages/index.html'));
+  app.get('/', (req, res) => authCheck(req, res).then(async (authClient) =>
+    res.sendFile(__dirname + '/pages/index.html')));
 
   app.get('/auth', () => getAuthClient().then(authClient => redirectToAuth(authClient)));
 
