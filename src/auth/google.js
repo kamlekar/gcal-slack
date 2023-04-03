@@ -32,6 +32,7 @@ function authorize(req, callback) {
 
 function getNewToken(req, oAuth2Client, callback) {
   console.log('hostname is:', req.headers.host);
+  console.log('request url', req.url);
   if (req && req.url.indexOf('code=') > -1) {
     const qs = new url.URL(req.url, 'https://' + req.headers.host)
       .searchParams;
