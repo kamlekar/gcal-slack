@@ -9,5 +9,20 @@
         <a href="/Upload">Upload</a>
       </li>
     </ul>
+
+    <a id="authenticate" style="display: none" href="">Authenticate</a>
+
+    <script src="https://code.jquery.com/jquery-3.6.4.js"></script>
+    <script>
+      $.ajax({
+        url: '/getAuthUrl',
+        success: (data) => {
+          const pasedData = JSON.parse(data);
+          const a = document.getElementById('authenticate');
+          a.href = pasedData.url;
+          a.style.display = 'block';
+        }
+      })
+    </script>
   </body>
 </html>
