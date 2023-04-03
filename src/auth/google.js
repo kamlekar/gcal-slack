@@ -54,15 +54,18 @@ function getNewToken(req, oAuth2Client, callback) {
 }
 
 const getAuthClient = async () => {
+  console.log('getAuthClient IN');
   return new Promise((resolve, reject) => {
+    console.log('getAuthClient: about to call fs.readFile');
     fs.readFile(CREDENTIALS_PATH, (err, content) => {
       if (err) return console.log('Error loading client secret file:', err);
       const credentials = JSON.parse(content);
-
+      console.log('getAuthClient: no error while reading the file');
       const { client_secret, client_id, redirect_uris } = credentials.web;
       const oAuth2Client = new google.auth.OAuth2(
         client_id, client_secret, redirect_uris[0]
       );
+      console.log('getAuthClient: oAuth2Client created');
       resolve(oAuth2Client);
     });
   })
