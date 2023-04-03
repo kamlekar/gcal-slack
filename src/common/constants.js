@@ -1,6 +1,7 @@
 const path = require('path');
+const os = require('os');
 
-const temp_path = process.env.LOCAL ? process.cwd() : '/tmp';
+const temp_path = process.env.LOCAL ? process.cwd() : os.tmpdir();
 module.exports = {
   // use ngrok to have a https url so the web push notifications work
   HOST: `${process.env.HOST}`,
