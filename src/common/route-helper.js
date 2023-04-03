@@ -1,10 +1,13 @@
 const { authorize } = require('../auth/google');
-const { TOKEN_PATH } = require('./constants');
+const { TOKEN_PATH, SCOPES } = require('./constants');
 const fs = require('fs');
+const opn = require('open');
+const { deleteFile } = require('./utils');
 
-function authCheck(req, res) {
+const authCheck = (req, res) => {
   return new Promise((resolve, reject) => {
-    authorize(req, function (authClient) {
+    authorize(req, async function (authClient) {
+      await checkToken(authClient);
       resolve(authClient);
     });
   });
@@ -23,7 +26,23 @@ const isTokenUnavailable = async () => {
   return tokenUnavailable;
 }
 
+const checkToken = async (oauth2Client) => {
+  const tokenUnavailable = await isTokenUnavailable();
+  if (oauth2Client.isTokenExpiring() || tokenUnavailable) {
+    await deleteFile(TOKEN_PATH);
+    // grab the url that will be used for authorization
+    const authorizeUrl = oauth2Client.generateAuthUrl({
+      access_type: 'offline',
+      scope: SCOPES.join(' '),
+      include_granted_scopes: true
+    });
+    // open the browser to the authorize url to start the workflow
+    opn(authorizeUrl, { wait: false }).then(cp => cp.unref());
+  }
+}
+
 module.exports = {
   authCheck,
+  checkToken,
   isTokenUnavailable
 }

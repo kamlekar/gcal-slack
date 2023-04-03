@@ -122,14 +122,10 @@ const getFolderInfo = async (parentFolderInfo, folderName, service) => {
 
   try {
     const parentFolderId = parentFolderInfo?.id;
-
+    const queryType = parentFolderInfo ? `mimeType='application/vnd.google-apps.folder' and trashed=false and '${parentFolderId}' in parents and name='${folderName}'` : `mimeType='application/vnd.google-apps.folder' and name='${folderName}' and trashed = false and 'root' in parents`
     // Search for the parent folder and the subfolder
-    const folderResponse = parentFolderInfo ? await service.files.list({
-      q: `mimeType='application/vnd.google-apps.folder' and trashed=false and '${parentFolderId}' in parents and name='${folderName}'`,
-      fields: 'files(id, name)',
-      spaces: 'drive'
-    }) : await service.files.list({
-      q: `mimeType='application/vnd.google-apps.folder' and name='${folderName}' and trashed = false and 'root' in parents`,
+    const folderResponse = await service.files.list({
+      q: queryType,
       fields: 'files(id, name)',
       spaces: 'drive'
     });

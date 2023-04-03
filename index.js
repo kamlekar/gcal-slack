@@ -1,16 +1,12 @@
-const path = require('path');
 require('dotenv').config();
 const process = require('process');
 const https = require('https');
 const fs = require('fs');
 const { initRoutes } = require('./src/routes');
-const opn = require('open');
-const { SCOPES, TOKEN_PATH } = require('./src/common/constants');
 const { authorize } = require('./src/auth/google');
 const { app } = require('./app');
-const { isTokenUnavailable } = require('./src/common/route-helper');
 const { auth } = require('./src/auth');
-const { deleteFile } = require('./src/common/utils');
+const { checkToken } = require('./src/common/route-helper');
 
 
 const PORT = process.env.PORT;
@@ -28,18 +24,7 @@ https.createServer(options, (req, res) => {
 
   authorize(req, async (oauth2Client) => {
     auth.setClient(oauth2Client);
-    const tokenUnavailable = await isTokenUnavailable();
-    if (oauth2Client.isTokenExpiring() || tokenUnavailable) {
-      await deleteFile(TOKEN_PATH);
-      // grab the url that will be used for authorization
-      const authorizeUrl = oauth2Client.generateAuthUrl({
-        access_type: 'offline',
-        scope: SCOPES.join(' '),
-        include_granted_scopes: true
-      });
-      // open the browser to the authorize url to start the workflow
-      opn(authorizeUrl, { wait: false }).then(cp => cp.unref());
-    }
+    await checkToken();
 
     app(req, res);
   })

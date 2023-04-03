@@ -5,16 +5,15 @@ const { listEvents } = require('./integrations/calendar/events/fetch');
 const { driveRoutes } = require('./integrations/drive');
 const { deleteFile } = require('./common/utils');
 const { TOKEN_PATH } = require('./common/constants');
-const { auth } = require('./auth');
+const { authCheck } = require('./common/route-helper');
 
 function initRoutes(app) {
   app.post('/calendar_events', debounce(calendarEventWatchCallback, 1000));
 
   app.get('/', (req, res) => res.sendFile(__dirname + '/pages/index.html'));
 
-  app.get('/integrate', async (req, res) => {
+  app.get('/integrate', (req, res) => authCheck(req, res).then(async (authClient) => {
     try {
-      const authClient = auth.getClient();
       const events = await listEvents(authClient);
       console.log('Upcoming 10 events:');
       events.map((event, i) => {
@@ -28,7 +27,7 @@ function initRoutes(app) {
     catch (ex) {
       console.log(ex);
     }
-  });
+  }));
   app.get('/upload', (req, res) => res.sendFile(__dirname + '/pages/upload.html'));
 
   app.get('/clearToken', async (req, res) => {
