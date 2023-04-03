@@ -4,7 +4,7 @@ const { watchCalendarEvents } = require('./integrations/calendar/events/watch');
 const { listEvents } = require('./integrations/calendar/events/fetch');
 const { driveRoutes } = require('./integrations/drive');
 const { deleteFile } = require('./common/utils');
-const { TOKEN_PATH } = require('./common/constants');
+const { TOKEN_PATH, SCOPES } = require('./common/constants');
 const { authCheck, redirectToAuth } = require('./common/route-helper');
 const { getAuthClient } = require('./auth/google');
 
@@ -15,6 +15,16 @@ function initRoutes(app) {
   app.get('/', (req, res) => res.sendFile(__dirname + '/pages/index.html'));
 
   app.get('/auth', () => getAuthClient().then(authClient => redirectToAuth(authClient)));
+
+  app.get('/getAuthUrl', (req, res) => getAuthClient().then(authClient => {
+    res.end(JSON.stringify({
+      url: authClient.generateAuthUrl({
+        access_type: 'offline',
+        scope: SCOPES.join(' '),
+        include_granted_scopes: true
+      })
+    }))
+  }));
 
   app.get('/integrate', (req, res) => authCheck(req, res).then(async (authClient) => {
     try {
