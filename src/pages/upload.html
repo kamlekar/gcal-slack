@@ -1085,7 +1085,12 @@
     </script>
   </head>
   <body class="p-4">
-    <h2>Drive</h2>
+    <nav class="navbar navbar-light bg-light mb-4">
+      <a class="navbar-brand" href="">Drive</a>
+      <div>
+        <a class="nav-link" href="/">Home</a>
+      </div>
+    </nav>
     <form id="uploadForm" action="/drive/upload" method="post" enctype="multipart/form-data">
       <div>
         <div class="form-group">
@@ -1142,9 +1147,6 @@
     <div class="custom-fade" style="display: none;">
       <div class="loader"></div>
     </div>
-    <p>
-      <a href="/">Home</a>
-    </p>
 
     <script src="https://code.jquery.com/jquery-3.6.4.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.6.2/dist/js/bootstrap.bundle.min.js"></script>
