@@ -42,7 +42,7 @@ async function saveCredentials(client) {
     client_secret: key.client_secret,
     refresh_token: client.credentials.refresh_token,
     redirect_uris: [
-      process.env.GOOGLE_REDIRECT_URI
+      `${process.env.HOST}/`
     ]
   });
   await fs.writeFile(TOKEN_PATH, payload);

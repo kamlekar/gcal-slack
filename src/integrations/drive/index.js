@@ -1,4 +1,3 @@
-const { auth } = require('../../auth');
 const { authCheck } = require('../../common/route-helper');
 const { uploadFile } = require('./upload');
 

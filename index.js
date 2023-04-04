@@ -3,11 +3,7 @@ const process = require('process');
 const https = require('https');
 const fs = require('fs');
 const { initRoutes } = require('./src/routes');
-const { authorize } = require('./src/auth/google');
 const { app } = require('./app');
-const { auth } = require('./src/auth');
-const { checkToken } = require('./src/common/route-helper');
-
 
 const PORT = process.env.PORT;
 

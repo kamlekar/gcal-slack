@@ -4,7 +4,7 @@ const os = require('os');
 const temp_path = process.env.LOCAL ? process.cwd() : os.tmpdir();
 module.exports = {
   // use ngrok to have a https url so the web push notifications work
-  HOST: `${process.env.HOST}`,
+  HOST: process.env.HOST,
   // @NOTE: If modifying these scopes, delete token.json.
   SCOPES: [
     'https://www.googleapis.com/auth/calendar.readonly',
