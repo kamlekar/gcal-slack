@@ -36,7 +36,7 @@ const storeFileOnDrive = async (inputFile, body, service) => {
   const { fileType, patientName, visitDate } = body;
   const fileExtension = inputFile.name.match(/\.[^\.]+$/)[0];
   const { day: visitedDay, month: visitedMonth } = quickDates(visitDate);
-  const drivePath = `Health/${patientName}/monthwise/${visitedMonth}`;
+  const drivePath = `${process.env.DRIVE_ROOT_DIR}/${patientName}/monthwise/${visitedMonth}`;
   const folderId = await getFolderId(drivePath, service);
   const requestBody = {
     name: `${visitedDay}-${fileType}${fileExtension}`,
@@ -63,7 +63,7 @@ const storeAilmentsShortcutsOnDrive = async (file, body, service) => {
     const lastShortcut = await ailmentsTokens.reduce(async (previousAilment, ailment) => {
       const previousShortcut = await previousAilment;
       shortcuts.push(previousShortcut);
-      const drivePath = `Health/${patientName}/ailments/${ailment}/${visitedMonth}`;
+      const drivePath = `${process.env.DRIVE_ROOT_DIR}/${patientName}/ailments/${ailment}/${visitedMonth}`;
       return createShortcut(file, drivePath, service);
     }, Promise.resolve());
     shortcuts.push(lastShortcut);
@@ -78,7 +78,7 @@ const storeHospitalShortcutOnDrive = async (file, body, service) => {
   const { patientName, visitDate, hospital } = body;
   const { month: visitedMonth } = quickDates(visitDate);
   try {
-    const drivePath = `Health/${patientName}/hospital/${hospital}/${visitedMonth}`;
+    const drivePath = `${process.env.DRIVE_ROOT_DIR}/${patientName}/hospital/${hospital}/${visitedMonth}`;
     const hospitalShortcut = await createShortcut(file, drivePath, service);
     return hospitalShortcut;
   }
