@@ -17,17 +17,7 @@ const options = {
 };
 
 https.createServer(options, (req, res) => {
-  if (req.url === '/clearToken') {
-    app(req, res);
-    return;
-  }
-  console.log('https: calling authorize now');
-  authorize(req, async (oauth2Client) => {
-    auth.setClient(oauth2Client);
-    await checkToken(oauth2Client);
-
-    app(req, res);
-  })
+  app(req, res);
 }).listen(PORT, () => {
   console.log('Server started!!');
 });

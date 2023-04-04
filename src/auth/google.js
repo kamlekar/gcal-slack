@@ -1,9 +1,10 @@
 const fs = require('fs');
 const url = require('url');
 const os = require('os');
+const opn = require('open');
 
 const { google } = require('googleapis');
-const { CREDENTIALS_PATH, TOKEN_PATH } = require('../common/constants');
+const { CREDENTIALS_PATH, TOKEN_PATH, SCOPES } = require('../common/constants');
 
 
 
@@ -42,9 +43,7 @@ function getNewToken(req, oAuth2Client, callback) {
       if (err) return console.error('Error retrieving access token', err);
       oAuth2Client.setCredentials(token);
       if (!fs.existsSync(os.tmpdir())) {
-        console.log("os tmp doesn't exist. creating one");
         fs.mkdirSync(os.tmpdir());
-        console.log("probably created now");
       }
       // Store the token to disk for later program executions
       fs.writeFile(TOKEN_PATH, JSON.stringify(token), (err) => {
@@ -74,7 +73,24 @@ const getAuthClient = async () => {
   })
 }
 
+const generateAuthUrl = (authClient) => {
+  return authClient.generateAuthUrl({
+    access_type: 'offline',
+    scope: SCOPES.join(' '),
+    include_granted_scopes: true
+  })
+}
+
+const redirectToAuth = (oauth2Client) => {
+  // grab the url that will be used for authorization
+  const authorizeUrl = generateAuthUrl(oauth2Client);
+  // open the browser to the authorize url to start the workflow
+  opn(authorizeUrl, { wait: false }).then(cp => cp.unref());
+}
+
 module.exports = {
   authorize,
-  getAuthClient
+  getAuthClient,
+  generateAuthUrl,
+  redirectToAuth
 }
