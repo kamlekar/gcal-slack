@@ -19,8 +19,9 @@
       }
 
       .awesomplete {
-          /* display: inline-block; */
+          /* display: inline-block; */ /* custom */
           position: relative;
+          flex: auto; /* custom */
       }
 
       .awesomplete > input {
@@ -30,7 +31,7 @@
       .awesomplete > ul {
           position: absolute;
           left: 0;
-          z-index: 1;
+          z-index: 2; /* custom */
           min-width: 100%;
           box-sizing: border-box;
           list-style: none;
@@ -524,6 +525,7 @@
       }
 
     </style>
+    
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     <script>
       /**
@@ -1101,30 +1103,40 @@
       <div>
         <div class="form-group">
           <label>Patient Name</label>
-          <input class="awesomplete form-control" name="patientName" data-list="venkateshwar,saatvik,supriya,mammu,baba"></input>
+          <div class="input-group">
+            <input class="form-control awesomplete dropdown-input" name="patientName" data-list="venkateshwar,saatvik,supriya,mammu,baba"></input>
+            <div class="input-group-append">
+              <button class="btn btn-outline-secondary dropdown-toggle" type="button" aria-expanded="false"></button>
+            </div>
+          </div>
         </div>
       </div>
       <div>
         <div class="form-group">
           <label>Ailments</label>
-          <input class="awesomplete form-control" name="ailments" data-list="fever,cold,cough,headache,stomachache,skin infection" data-multiple></input>
+          <div class="input-group">
+            <input class="awesomplete form-control dropdown-input" name="ailments" data-list="fever,cold,cough,headache,stomachache,skin infection" data-multiple></input>
+            <div class="input-group-append">
+              <button class="btn btn-outline-secondary dropdown-toggle" type="button" aria-expanded="false"></button>
+            </div>
+          </div>
         </div>
       </div>
       <div>
         <div class="form-group">
           <label>Hospital</label>
-          <input class="awesomplete form-control" name="hospital" data-list="safekids,fernandez,ankura,butterfly,drmanmohan" data-multiple></input>
+          <div class="input-group">
+            <input class="awesomplete form-control dropdown-input" name="hospital" data-list="Safekids,Fernandez,Ankura,Butterfly,Dr Manmohan" data-multiple></input>
+            <div class="input-group-append">
+              <button class="btn btn-outline-secondary dropdown-toggle" type="button" aria-expanded="false"></button>
+            </div>
+          </div>
         </div>
       </div>
       <div>
         <div class="form-group">
           <label>Upload File</label>
-
-
           <div class="input-group">
-            <div class="input-group-prepend">
-              <span class="input-group-text" id="inputGroupFileAddon01">Upload</span>
-            </div>
             <div class="custom-file">
               <input type="file" id="docFile" class="custom-file-input"
                 aria-describedby="inputGroupFileAddon01" name="docFile" accept=".pdf,image/*" required>
@@ -1136,7 +1148,12 @@
       <div>
         <div class="form-group">
           <label>File type</label>
-          <input class="awesomplete form-control" name="fileType" data-list="prescription,bill,report" data-multiple></input>
+          <div class="input-group">
+            <input class="awesomplete form-control dropdown-input" name="fileType" data-list="prescription,bill,report" data-multiple></input>
+            <div class="input-group-append">
+              <button class="btn btn-outline-secondary dropdown-toggle" type="button" aria-expanded="false"></button>
+            </div>
+          </div>
         </div>
       </div>
       <div>
@@ -1166,6 +1183,31 @@
             this.input.value = before + text + ", ";
           }
         });
+
+        $('input.dropdown-input').each((i, elem) => {
+          const $elem = $(elem);
+          const comboplete = new Awesomplete(elem, {
+            minChars: 0,
+          });
+
+          const dropdownToggle = $elem.parents('.input-group').find('.dropdown-toggle')[0];
+          
+          dropdownToggle.addEventListener("click", function() {
+            if (comboplete.ul.childNodes.length === 0) {
+              comboplete.minChars = 0;
+              comboplete.evaluate();
+              comboplete.input.focus();
+            }
+            else if (comboplete.ul.hasAttribute('hidden')) {
+              comboplete.open();
+              comboplete.input.focus();
+              return;
+            }
+            else {
+              comboplete.close();
+            }
+          });
+        })
 
         $(document.body).on('change', '#docFile', (e) => {
           $('.custom-file-label').html(e.currentTarget.value.match(/[^\\]+$/)[0]);
