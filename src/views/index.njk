@@ -1,0 +1,27 @@
+{% extends "./layouts/base.njk" %}
+{% block body_start %}
+  <nav class="navbar navbar-light bg-light mb-4">
+    <a class="navbar-brand" href="">Home</a>
+    <div>
+      <a class="nav-link" id="authenticate" style="display: none" href="">Manual Authentication</a>
+    </div>
+  </nav>
+  <div class="btn-group" role="group" aria-label="Main menu">
+      <a class="btn btn-primary" href="/Upload">Upload</a>
+      <a class="btn btn-secondary disabled" href="/integrate">Integrate</a>
+  </div>
+{% endblock %}
+
+{% block body_end %}
+<script>
+  $.ajax({
+    url: '/getAuthUrl',
+    success: (data) => {
+      const pasedData = JSON.parse(data);
+      const a = document.getElementById('authenticate');
+      a.href = pasedData.url;
+      a.style.display = 'block';
+    }
+  })
+</script>
+{% endblock %}
