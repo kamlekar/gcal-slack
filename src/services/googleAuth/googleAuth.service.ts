@@ -6,6 +6,8 @@ import opn from 'open';
 import { google } from 'googleapis';
 import { OAuth2Client } from 'googleapis-common';
 import constants from '../../common/constants';
+import { deleteFile } from '../utils/files.service';
+import { Request, Response } from 'express';
 
 const { CREDENTIALS_PATH, TOKEN_PATH, SCOPES, HOST } = constants;
 
@@ -15,7 +17,7 @@ export class GoogleAuthService {
     return 'Hello World!';
   }
 
-  async authorize(req, callback) {
+  async authorize(req: Request, callback) {
     const oAuth2Client = await this.getAuthClient();
     // Check if we have previously stored a token.
     fs.readFile(TOKEN_PATH, (err, token) => {
@@ -28,7 +30,7 @@ export class GoogleAuthService {
     });
   }
 
-  getNewToken(req, oAuth2Client, callback) {
+  getNewToken(req: Request, oAuth2Client, callback) {
     console.log('request url', req.url);
     if (req && req.url.indexOf('code=') > -1) {
       const qs = new url.URL(req.url, HOST).searchParams;
@@ -85,5 +87,40 @@ export class GoogleAuthService {
     const authorizeUrl = this.generateAuthUrl(oauth2Client);
     // open the browser to the authorize url to start the workflow
     opn(authorizeUrl, { wait: false }).then((cp) => cp.unref());
+  }
+
+  authCheck(req: Request, res: Response) {
+    return new Promise((resolve, reject) => {
+      this.authorize(req, async function (authClient) {
+        await this.checkToken(authClient);
+        resolve(authClient);
+      });
+    });
+  }
+
+  async isTokenUnavailable() {
+    const tokenUnavailable = await new Promise((resolve) => {
+      // Check if we have previously stored a token.
+      fs.readFile(TOKEN_PATH, (err, token) => {
+        if (err) {
+          resolve(true);
+        } else {
+          resolve(false);
+        }
+      });
+    });
+    return tokenUnavailable;
+  }
+
+  async checkToken(oauth2Client) {
+    const tokenUnavailable = await this.isTokenUnavailable();
+    if (oauth2Client.isTokenExpiring() || tokenUnavailable) {
+      try {
+        await deleteFile(TOKEN_PATH);
+      } catch (ex) {
+        console.log(ex);
+      }
+      this.redirectToAuth(oauth2Client);
+    }
   }
 }
