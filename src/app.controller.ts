@@ -8,6 +8,6 @@ export class AppController {
 
   @Get()
   getHello(@Res() res: Response) {
-    res.render('views/index.njk');
+    res.render('views/pages/index.njk');
   }
 }

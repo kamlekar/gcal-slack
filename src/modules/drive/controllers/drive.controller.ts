@@ -1,4 +1,4 @@
-import { Controller, Post, Req, Res } from '@nestjs/common';
+import { Controller, Get, Post, Req, Res } from '@nestjs/common';
 import { UploadService } from '../services/upload.service';
 import { Request, Response } from 'express';
 import { GoogleAuthService } from 'src/modules/authentication/services/googleAuth.service';
@@ -9,6 +9,11 @@ export class DriveController {
     private uploadService: UploadService,
     private googleAuthService: GoogleAuthService,
   ) {}
+
+  @Get('/upload')
+  getUploadForm(@Res() res: Response) {
+    res.render('views/pages/drive/upload.njk');
+  }
 
   @Post('/drive/upload')
   submitUploadForm(@Req() req: Request, @Res() res: Response) {

@@ -103,10 +103,13 @@ export class GoogleAuthService {
 
   authCheck(req: Request, res: Response) {
     return new Promise((resolve, reject) => {
-      this.authorize(req, async function (authClient) {
-        await this.checkToken(authClient);
-        resolve(authClient);
-      });
+      this.authorize(
+        req,
+        async function (authClient) {
+          await this.checkToken(authClient);
+          resolve(authClient);
+        }.bind(this),
+      );
     });
   }
 
