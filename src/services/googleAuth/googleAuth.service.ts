@@ -1,8 +1,8 @@
 import { Injectable } from '@nestjs/common';
-import fs from 'fs';
-import url from 'url';
-import os from 'os';
-import opn from 'open';
+import * as fs from 'fs';
+import * as url from 'url';
+import * as os from 'os';
+import * as opn from 'open';
 import { google } from 'googleapis';
 import { OAuth2Client } from 'googleapis-common';
 import constants from '../../common/constants';

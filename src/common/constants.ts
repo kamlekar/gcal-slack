@@ -1,5 +1,5 @@
-import path from 'path';
-import os from 'os';
+import * as path from 'path';
+import * as os from 'os';
 
 const temp_path = process.env.LOCAL ? process.cwd() : os.tmpdir();
 const constants = {
