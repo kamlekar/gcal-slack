@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { Inject, Injectable } from '@nestjs/common';
 import * as fs from 'fs';
 import * as url from 'url';
 import * as os from 'os';
@@ -11,11 +11,19 @@ import {
   CREDENTIALS_PATH,
   TOKEN_PATH,
   SCOPES,
-  HOST,
-} from 'src/common/constants';
+} from '../../../common/constants';
 
 @Injectable()
 export class GoogleAuthService {
+  constructor(
+    @Inject('CREDENTIALS_PATH')
+    private credPath: typeof CREDENTIALS_PATH,
+    @Inject('TOKEN_PATH')
+    private tokenPath: typeof TOKEN_PATH,
+    @Inject('SCOPES')
+    private scopes: typeof SCOPES,
+  ) {}
+
   getHello(): string {
     return 'Hello World!';
   }
@@ -23,7 +31,7 @@ export class GoogleAuthService {
   async authorize(req: Request, callback) {
     const oAuth2Client = await this.getAuthClient();
     // Check if we have previously stored a token.
-    fs.readFile(TOKEN_PATH, (err, token) => {
+    fs.readFile(this.tokenPath, (err, token) => {
       if (err) {
         console.log(err);
         return this.getNewToken(req, oAuth2Client, callback);
@@ -36,7 +44,7 @@ export class GoogleAuthService {
   getNewToken(req: Request, oAuth2Client, callback) {
     console.log('request url', req.url);
     if (req && req.url.indexOf('code=') > -1) {
-      const qs = new url.URL(req.url, HOST).searchParams;
+      const qs = new url.URL(req.url, process.env.HOST).searchParams;
       const code = qs.get('code');
       oAuth2Client.getToken(code, (err, token) => {
         if (err) return console.error('Error retrieving access token', err);
@@ -45,9 +53,9 @@ export class GoogleAuthService {
           fs.mkdirSync(os.tmpdir());
         }
         // Store the token to disk for later program executions
-        fs.writeFile(TOKEN_PATH, JSON.stringify(token), (err) => {
+        fs.writeFile(this.tokenPath, JSON.stringify(token), (err) => {
           if (err) return console.error(err);
-          console.log('Token stored to', TOKEN_PATH);
+          console.log('Token stored to', this.tokenPath);
         });
         callback(oAuth2Client);
       });
@@ -59,14 +67,15 @@ export class GoogleAuthService {
   async getAuthClient(): Promise<OAuth2Client> {
     return new Promise((resolve, reject) => {
       // Load client secrets from a local file.
-      fs.readFile(CREDENTIALS_PATH, (err, content) => {
+      fs.readFile(this.credPath, (err, content) => {
         if (err) return console.log('Error loading client secret file:', err);
         const credentials = JSON.parse(content.toString());
 
         const { client_secret, client_id, redirect_uris } = credentials.web;
-        const defaultRedirectUri = `${HOST}/`;
+        const defaultRedirectUri = `${process.env.HOST}/`;
         const redirect_uri =
-          redirect_uris.find((f) => f.indexOf(HOST) > -1) || defaultRedirectUri;
+          redirect_uris.find((f) => f.indexOf(process.env.HOST) > -1) ||
+          defaultRedirectUri;
         const oauth = new google.auth.OAuth2(
           client_id,
           client_secret,
@@ -80,7 +89,7 @@ export class GoogleAuthService {
   generateAuthUrl(authClient) {
     return authClient.generateAuthUrl({
       access_type: 'offline',
-      scope: SCOPES.join(' '),
+      scope: this.scopes.join(' '),
       include_granted_scopes: true,
     });
   }
@@ -104,7 +113,7 @@ export class GoogleAuthService {
   async isTokenUnavailable() {
     const tokenUnavailable = await new Promise((resolve) => {
       // Check if we have previously stored a token.
-      fs.readFile(TOKEN_PATH, (err, token) => {
+      fs.readFile(this.tokenPath, (err, token) => {
         if (err) {
           resolve(true);
         } else {
@@ -119,7 +128,7 @@ export class GoogleAuthService {
     const tokenUnavailable = await this.isTokenUnavailable();
     if (oauth2Client.isTokenExpiring() || tokenUnavailable) {
       try {
-        await deleteFile(TOKEN_PATH);
+        await deleteFile(this.tokenPath);
       } catch (ex) {
         console.log(ex);
       }
