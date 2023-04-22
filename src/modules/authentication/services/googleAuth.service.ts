@@ -3,26 +3,25 @@ import * as fs from 'fs';
 import * as url from 'url';
 import * as os from 'os';
 import * as opn from 'open';
+import * as path from 'path';
 import { google } from 'googleapis';
 import { OAuth2Client } from 'googleapis-common';
 import { deleteFile } from 'src/services/utils/files.service';
 import { Request, Response } from 'express';
-import {
-  CREDENTIALS_PATH,
-  TOKEN_PATH,
-  SCOPES,
-} from '../../../common/constants';
+import { CREDENTIALS_PATH, SCOPES } from '../../../common/constants';
 
 @Injectable()
 export class GoogleAuthService {
+  tokenPath = '';
   constructor(
     @Inject('CREDENTIALS_PATH')
     private credPath: typeof CREDENTIALS_PATH,
-    @Inject('TOKEN_PATH')
-    private tokenPath: typeof TOKEN_PATH,
     @Inject('SCOPES')
     private scopes: typeof SCOPES,
-  ) {}
+  ) {
+    const temp_path = process.env.LOCAL ? process.cwd() : os.tmpdir();
+    this.tokenPath = path.join(temp_path, 'token.json');
+  }
 
   getHello(): string {
     return 'Hello World!';

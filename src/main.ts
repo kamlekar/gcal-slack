@@ -5,6 +5,8 @@ import { join } from 'path';
 import * as nunjucks from 'nunjucks';
 import { AppModule } from './app.module';
 import * as fs from 'fs';
+import * as os from 'os';
+import * as fileUpload from 'express-fileupload';
 
 dotenv.config();
 
@@ -19,6 +21,14 @@ async function bootstrap() {
   const app: NestExpressApplication = await NestFactory.create(AppModule, {
     httpsOptions: options,
   });
+
+  app.use(
+    fileUpload({
+      useTempFiles: true,
+      tempFileDir: `${os.tmpdir()}/`,
+    }),
+  );
+
   const port = process.env.PORT;
   const opts: nunjucks.ConfigureOptions = {
     express: app,
