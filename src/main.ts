@@ -4,6 +4,7 @@ import * as dotenv from 'dotenv';
 import { join } from 'path';
 import * as nunjucks from 'nunjucks';
 import { AppModule } from './app.module';
+import * as fs from 'fs';
 
 dotenv.config();
 
@@ -11,8 +12,14 @@ const ROOT_DIR: string = join(__dirname, '..');
 const IS_PRODUCTION: boolean = process.env.LOCAL !== 'true';
 
 async function bootstrap() {
-  const app: NestExpressApplication = await NestFactory.create(AppModule);
-  const port = 3000;
+  const options = {
+    key: fs.readFileSync(ROOT_DIR + '/localhost-key.pem'),
+    cert: fs.readFileSync(ROOT_DIR + '/localhost.pem'),
+  };
+  const app: NestExpressApplication = await NestFactory.create(AppModule, {
+    httpsOptions: options,
+  });
+  const port = process.env.PORT;
   const opts: nunjucks.ConfigureOptions = {
     express: app,
     autoescape: true,
