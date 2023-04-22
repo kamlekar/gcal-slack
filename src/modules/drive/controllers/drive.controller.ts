@@ -1,7 +1,7 @@
 import { Controller, Post, Req, Res } from '@nestjs/common';
-import { GoogleAuthService } from 'src/services/googleAuth';
 import { UploadService } from '../services/upload.service';
 import { Request, Response } from 'express';
+import { GoogleAuthService } from 'src/modules/authentication/services/googleAuth.service';
 
 @Controller()
 export class DriveController {

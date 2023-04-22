@@ -5,11 +5,14 @@ import * as os from 'os';
 import * as opn from 'open';
 import { google } from 'googleapis';
 import { OAuth2Client } from 'googleapis-common';
-import constants from '../../common/constants';
-import { deleteFile } from '../utils/files.service';
+import { deleteFile } from 'src/services/utils/files.service';
 import { Request, Response } from 'express';
-
-const { CREDENTIALS_PATH, TOKEN_PATH, SCOPES, HOST } = constants;
+import {
+  CREDENTIALS_PATH,
+  TOKEN_PATH,
+  SCOPES,
+  HOST,
+} from 'src/common/constants';
 
 @Injectable()
 export class GoogleAuthService {
