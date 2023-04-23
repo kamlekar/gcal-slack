@@ -1,14 +1,16 @@
 # Setup & Usage
 
 ## Fetching new Google credentials
+
 - Go to Google developer console
 - Create a new project with any name
-- Under Manage APIs, enable Google calendar API 
+- Under Manage APIs, enable Google calendar API
 - Under the same project, create new OAuth client ID credentials
 - Generate a credentials.json file and place it in the root folder of this repo.
 
 ## Running locally on HTTPS
-Since this app rely on Google calendars event watch subscription, it need the server to run on HTTPs. 
+
+Since this app rely on Google calendars event watch subscription, it need the server to run on HTTPs.
 
 ### To run on HTTPS locally (_recommended_):
 
@@ -27,10 +29,9 @@ Go to `local.integrate.app:3000` to see the view.
 - [Ref link using mkcert](https://web.dev/how-to-use-local-https/)
 - [Ref link for updating host file](https://www.howtogeek.com/27350/beginner-geek-how-to-edit-your-hosts-file/)
 
-
 <b>OR</b>
 
-### Use ngrok
+### Use ngrok (_recommended only for testing calendar watch event_)
 
 Install `ngrok`
 
@@ -47,12 +48,15 @@ ngrok http https://local.integrate.app:3000 --host-header=rewrite
 Copy the generated random HTTPS string URL into `.env` -> `HOST` property. And then run the server using `node .`. Go to ngrok generated url to view the UI.
 
 ## Create new Slack app
+
 - Create a new Slack app from this page: https://api.slack.com/apps
 - Copy the `src/slack/app-manifest.yaml` content to `App Manifest` tab under newly created app.
 - Go to OAuth scopes in the same page and fill the env variables as the format mentioned in `.env.example` file.
 
 ## Running the app
+
 Once above setup steps are done, run app using:
+
 ```
 node .
 ```
@@ -60,7 +64,6 @@ node .
 Go to `local.integrate.app:3000` to see the view.
 
 You can also run the app on VScode debugger. Select `webserver` script while debugging.
-
 
 # Issues
 

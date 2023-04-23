@@ -20,6 +20,7 @@ export class WatchService {
     const channel = {
       id: uuidv4(),
       type: 'web_hook',
+      // @NOTE: use ngrok url to test instead of env HOST
       address: `${process.env.HOST}/calendar_events`, // triggers callback
     };
 

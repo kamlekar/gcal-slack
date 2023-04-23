@@ -1,4 +1,4 @@
-import { Controller, Get, Req, Res } from '@nestjs/common';
+import { Controller, Get, Post, Req, Res } from '@nestjs/common';
 import { TriggersService } from '../services/triggers.service';
 import { debounce } from 'lodash';
 import { GoogleAuthService } from 'src/modules/authentication/services/googleAuth.service';
@@ -15,9 +15,13 @@ export class CalendarController {
     private watchService: WatchService,
   ) {}
 
-  @Get('/calendar_events')
-  calendarEvents() {
-    debounce(this.triggersService.calendarEventWatchCallback, 1000);
+  @Post('/calendar_events')
+  calendarEvents(@Req() req: Request, @Res() res: Response) {
+    // debounce(
+    //   this.triggersService.calendarEventWatchCallback.bind(null, req, res),
+    //   1000,
+    // );
+    this.triggersService.calendarEventWatchCallback(req, res);
   }
 
   @Get('/integrate')
