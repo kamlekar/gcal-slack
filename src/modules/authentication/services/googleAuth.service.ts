@@ -55,8 +55,8 @@ export class GoogleAuthService {
         fs.writeFile(this.tokenPath, JSON.stringify(token), (err) => {
           if (err) return console.error(err);
           console.log('Token stored to', this.tokenPath);
+          callback(oAuth2Client);
         });
-        callback(oAuth2Client);
       });
     } else {
       callback(oAuth2Client);

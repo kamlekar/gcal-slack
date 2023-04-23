@@ -1,6 +1,7 @@
 import { Controller, Get, Req, Res } from '@nestjs/common';
 import { Request, Response } from 'express';
 import { GoogleAuthService } from '../services/googleAuth.service';
+import { deleteFile } from 'src/services/utils/files.service';
 
 @Controller()
 export class AuthController {
@@ -15,5 +16,11 @@ export class AuthController {
         }),
       );
     });
+  }
+
+  @Get('/clearToken')
+  async clearToken(@Res() res: Response) {
+    await deleteFile(this.googleAuthService.tokenPath);
+    res.end('done');
   }
 }

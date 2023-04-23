@@ -1,5 +1,5 @@
 import { google } from 'googleapis';
-import { uuidv4 } from 'uuid';
+import { v4 as uuidv4 } from 'uuid';
 import { Injectable } from '@nestjs/common';
 
 @Injectable()
@@ -23,15 +23,18 @@ export class WatchService {
       address: `${process.env.HOST}/calendar_events`, // triggers callback
     };
 
-    const response = await calendar.events.watch({
-      calendarId: 'primary',
-      requestBody: channel,
-    });
+    try {
+      const response = await calendar.events.watch({
+        calendarId: 'primary',
+        requestBody: channel,
+      });
+      console.log(response);
 
-    console.log(response);
-
-    this.channelId = response.data.id;
-    this.channelResourceId = response.data.resourceId;
+      this.channelId = response.data.id;
+      this.channelResourceId = response.data.resourceId;
+    } catch {
+      console.log('something went wrong');
+    }
   }
 
   stopWatchingCalendarEvents(auth) {
