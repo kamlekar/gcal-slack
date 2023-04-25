@@ -1,14 +1,16 @@
+/* eslint-disable @typescript-eslint/no-var-requires */
 import { Inject, Injectable } from '@nestjs/common';
-import * as fs from 'fs';
-import * as url from 'url';
-import * as os from 'os';
-import * as opn from 'open';
-import * as path from 'path';
+import opn from 'open';
 import { google } from 'googleapis';
 import { OAuth2Client } from 'googleapis-common';
-import { deleteFile } from 'src/services/utils/files.service';
+import { deleteFile } from '../../../services/utils/files.service';
 import { Request, Response } from 'express';
 import { CREDENTIALS_PATH, SCOPES } from '../../../common/constants';
+
+const fs = require('fs');
+const url = require('url');
+const os = require('os');
+const path = require('path');
 
 @Injectable()
 export class GoogleAuthService {

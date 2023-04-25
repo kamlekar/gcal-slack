@@ -1,7 +1,7 @@
 import { Controller, Get, Req, Res } from '@nestjs/common';
 import { Request, Response } from 'express';
 import { GoogleAuthService } from '../services/googleAuth.service';
-import { deleteFile } from 'src/services/utils/files.service';
+import { deleteFile } from '../../../services/utils/files.service';
 
 @Controller()
 export class AuthController {

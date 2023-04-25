@@ -1,7 +1,6 @@
 import { Controller, Get, Post, Req, Res } from '@nestjs/common';
 import { TriggersService } from '../services/triggers.service';
-import { debounce } from 'lodash';
-import { GoogleAuthService } from 'src/modules/authentication/services/googleAuth.service';
+import { GoogleAuthService } from '../../authentication/services/googleAuth.service';
 import { EventsService } from '../services/events.service';
 import { WatchService } from '../services/watch.service';
 import { Request, Response } from 'express';

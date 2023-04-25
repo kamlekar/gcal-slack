@@ -1,7 +1,8 @@
+/* eslint-disable @typescript-eslint/no-var-requires */
 import { Injectable } from '@nestjs/common';
-
 import { calendar_v3, google } from 'googleapis';
-import * as moment from 'moment';
+
+const moment = require('moment');
 
 @Injectable()
 export class EventsService {

@@ -1,8 +1,10 @@
+/* eslint-disable @typescript-eslint/no-var-requires */
 import { Injectable } from '@nestjs/common';
 import { google } from 'googleapis';
-import * as fs from 'fs';
-import * as moment from 'moment';
 import { commaSeparatedValues } from '../../../services/utils/strings.service';
+
+const fs = require('fs');
+const moment = require('moment');
 
 @Injectable()
 export class UploadService {

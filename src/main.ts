@@ -1,12 +1,14 @@
+/* eslint-disable @typescript-eslint/no-var-requires */
 import { NestFactory } from '@nestjs/core';
 import { NestExpressApplication } from '@nestjs/platform-express';
-import * as dotenv from 'dotenv';
 import { join } from 'path';
-import * as nunjucks from 'nunjucks';
 import { AppModule } from './app.module';
-import * as fs from 'fs';
-import * as os from 'os';
-import * as fileUpload from 'express-fileupload';
+
+const dotenv = require('dotenv');
+const fs = require('fs');
+const os = require('os');
+const fileUpload = require('express-fileupload');
+const nunjucks = require('nunjucks');
 
 dotenv.config();
 
@@ -32,7 +34,7 @@ async function bootstrap() {
   const port = process.env.PORT;
 
   // Ref: https://blog.devgenius.io/multiple-page-application-mpa-in-nest-js-with-nunjucks-1fd522cc1aa
-  const opts: nunjucks.ConfigureOptions = {
+  const opts = {
     express: app,
     autoescape: true,
     watch: !IS_PRODUCTION,

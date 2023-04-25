@@ -1,7 +1,7 @@
-import { Inject, Injectable } from '@nestjs/common';
+import { Injectable } from '@nestjs/common';
 import { EventsService } from './events.service';
-import { GoogleAuthService } from 'src/modules/authentication/services/googleAuth.service';
-import { StatusService } from 'src/modules/slack/services/status.service';
+import { GoogleAuthService } from '../../authentication/services/googleAuth.service';
+import { StatusService } from '../../slack/services/status.service';
 
 @Injectable()
 export class TriggersService {

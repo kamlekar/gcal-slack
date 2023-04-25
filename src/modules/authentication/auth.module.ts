@@ -1,7 +1,7 @@
 import { Module } from '@nestjs/common';
 import { AuthController } from './controllers/auth.controller';
 import { GoogleAuthService } from './services/googleAuth.service';
-import { CREDENTIALS_PATH, SCOPES } from 'src/common/constants';
+import { CREDENTIALS_PATH, SCOPES } from '../../common/constants';
 
 @Module({
   imports: [],
