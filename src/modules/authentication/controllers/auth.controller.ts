@@ -23,4 +23,13 @@ export class AuthController {
     await deleteFile(this.googleAuthService.tokenPath);
     res.end('done');
   }
+
+  @Get('/auth')
+  async goToAuth(@Res() res: Response) {
+    res.render('views/pages/authenticate/index.njk', {
+      authUrl: this.googleAuthService.generateAuthUrl(
+        await this.googleAuthService.getAuthClient(),
+      ),
+    });
+  }
 }

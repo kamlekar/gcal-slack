@@ -30,6 +30,8 @@ async function bootstrap() {
   );
 
   const port = process.env.PORT;
+
+  // Ref: https://blog.devgenius.io/multiple-page-application-mpa-in-nest-js-with-nunjucks-1fd522cc1aa
   const opts: nunjucks.ConfigureOptions = {
     express: app,
     autoescape: true,

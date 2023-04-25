@@ -9,7 +9,11 @@ export class AppController {
   @Get()
   getDashboard(@Req() req: Request, @Res() res: Response) {
     this.googleAuthService.authCheck(req, res).then(async (authClient) => {
-      res.render('views/pages/index.njk');
+      res.render('views/pages/index.njk', {
+        authUrl: this.googleAuthService.generateAuthUrl(
+          await this.googleAuthService.getAuthClient(),
+        ),
+      });
     });
   }
 }
