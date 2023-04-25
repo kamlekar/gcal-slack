@@ -105,7 +105,11 @@ export class GoogleAuthService {
       this.authorize(
         req,
         async function (authClient) {
-          await this.checkToken(authClient);
+          try {
+            await this.checkToken(authClient);
+          } catch (ex) {
+            reject(ex);
+          }
           resolve(authClient);
         }.bind(this),
       );
@@ -134,7 +138,7 @@ export class GoogleAuthService {
       } catch (ex) {
         console.log(ex);
       }
-      this.redirectToAuth(oauth2Client);
+      throw 'AUTH_CHECK_FAILED';
     }
   }
 }

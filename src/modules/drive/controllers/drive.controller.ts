@@ -11,8 +11,20 @@ export class DriveController {
   ) {}
 
   @Get('/upload')
-  getUploadForm(@Res() res: Response) {
-    res.render('views/pages/drive/upload.njk');
+  async getUploadForm(@Req() req: Request, @Res() res: Response) {
+    let requiredAuth = false;
+    try {
+      await this.googleAuthService.authCheck(req, res);
+    } catch (ex) {
+      requiredAuth = true;
+    }
+
+    res.render('views/pages/drive/upload.njk', {
+      authUrl: this.googleAuthService.generateAuthUrl(
+        await this.googleAuthService.getAuthClient(),
+      ),
+      requiredAuth,
+    });
   }
 
   @Post('/drive/upload')

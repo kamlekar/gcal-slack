@@ -7,13 +7,18 @@ export class AppController {
   constructor(private readonly googleAuthService: GoogleAuthService) {}
 
   @Get()
-  getDashboard(@Req() req: Request, @Res() res: Response) {
-    this.googleAuthService.authCheck(req, res).then(async (authClient) => {
-      res.render('views/pages/index.njk', {
-        authUrl: this.googleAuthService.generateAuthUrl(
-          await this.googleAuthService.getAuthClient(),
-        ),
-      });
+  async getDashboard(@Req() req: Request, @Res() res: Response) {
+    let requiredAuth = false;
+    try {
+      await this.googleAuthService.authCheck(req, res);
+    } catch (ex) {
+      requiredAuth = true;
+    }
+    res.render('views/pages/index.njk', {
+      authUrl: this.googleAuthService.generateAuthUrl(
+        await this.googleAuthService.getAuthClient(),
+      ),
+      requiredAuth,
     });
   }
 }
