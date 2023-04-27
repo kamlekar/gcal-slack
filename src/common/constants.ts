@@ -1,5 +1,5 @@
 /* eslint-disable @typescript-eslint/no-var-requires */
-const path = require('path');
+import * as path from 'path';
 
 // @NOTE: If modifying these scopes, delete token.json.
 export const SCOPES = [

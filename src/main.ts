@@ -4,11 +4,11 @@ import { NestExpressApplication } from '@nestjs/platform-express';
 import { join } from 'path';
 import { AppModule } from './app.module';
 
-const dotenv = require('dotenv');
-const fs = require('fs');
-const os = require('os');
-const fileUpload = require('express-fileupload');
-const nunjucks = require('nunjucks');
+import * as dotenv from 'dotenv';
+import * as fs from 'fs';
+import * as os from 'os';
+import * as fileUpload from 'express-fileupload';
+import * as nunjucks from 'nunjucks';
 
 dotenv.config();
 

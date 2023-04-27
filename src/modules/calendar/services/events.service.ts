@@ -2,7 +2,7 @@
 import { Injectable } from '@nestjs/common';
 import { calendar_v3, google } from 'googleapis';
 
-const moment = require('moment');
+import * as moment from 'moment';
 
 @Injectable()
 export class EventsService {

@@ -6,10 +6,10 @@ import { deleteFile } from '../../../services/utils/files.service';
 import { Request, Response } from 'express';
 import { CREDENTIALS_PATH, SCOPES } from '../../../common/constants';
 
-const fs = require('fs');
-const url = require('url');
-const os = require('os');
-const path = require('path');
+import * as fs from 'fs';
+import * as url from 'url';
+import * as os from 'os';
+import * as path from 'path';
 
 @Injectable()
 export class GoogleAuthService {

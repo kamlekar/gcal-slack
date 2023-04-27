@@ -3,8 +3,8 @@ import { Injectable } from '@nestjs/common';
 import { google } from 'googleapis';
 import { commaSeparatedValues } from '../../../services/utils/strings.service';
 
-const fs = require('fs');
-const moment = require('moment');
+import * as fs from 'fs';
+import * as moment from 'moment';
 
 @Injectable()
 export class UploadService {
