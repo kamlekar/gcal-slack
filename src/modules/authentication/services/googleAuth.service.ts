@@ -1,6 +1,5 @@
 /* eslint-disable @typescript-eslint/no-var-requires */
 import { Inject, Injectable } from '@nestjs/common';
-import opn from 'open';
 import { google } from 'googleapis';
 import { OAuth2Client } from 'googleapis-common';
 import { deleteFile } from '../../../services/utils/files.service';
@@ -93,13 +92,6 @@ export class GoogleAuthService {
       scope: this.scopes.join(' '),
       include_granted_scopes: true,
     });
-  }
-
-  redirectToAuth(oauth2Client) {
-    // grab the url that will be used for authorization
-    const authorizeUrl = this.generateAuthUrl(oauth2Client);
-    // open the browser to the authorize url to start the workflow
-    opn(authorizeUrl, { wait: false }).then((cp) => cp.unref());
   }
 
   authCheck(req: Request, res: Response) {
