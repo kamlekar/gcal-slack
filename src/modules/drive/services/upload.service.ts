@@ -4,7 +4,7 @@ import { google } from 'googleapis';
 import { commaSeparatedValues } from '../../../services/utils/strings.service';
 
 import * as fs from 'fs';
-import * as moment from 'moment';
+import moment from 'moment';
 
 @Injectable()
 export class UploadService {

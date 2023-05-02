@@ -7,7 +7,7 @@ import { AppModule } from './app.module';
 import * as dotenv from 'dotenv';
 import * as fs from 'fs';
 import * as os from 'os';
-import * as fileUpload from 'express-fileupload';
+import fileUpload from 'express-fileupload';
 import * as nunjucks from 'nunjucks';
 
 dotenv.config();
