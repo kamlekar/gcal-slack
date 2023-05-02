@@ -35,7 +35,7 @@ export class CalendarController {
 
       this.watchService.watchCalendarEvents(authClient);
 
-      res.render('views/pages/slack/integrate.njk');
+      res.render('pages/slack/integrate.njk');
     });
   }
 }

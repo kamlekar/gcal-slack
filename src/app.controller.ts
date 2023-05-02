@@ -14,7 +14,7 @@ export class AppController {
     } catch (ex) {
       requiredAuth = true;
     }
-    res.render('views/pages/index.njk', {
+    res.render('pages/index.njk', {
       authUrl: this.googleAuthService.generateAuthUrl(
         await this.googleAuthService.getAuthClient(),
       ),

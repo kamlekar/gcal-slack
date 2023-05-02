@@ -9,7 +9,7 @@ import { CREDENTIALS_PATH, SCOPES } from '../../../common/constants';
 import * as fs from 'fs';
 import * as url from 'url';
 import * as os from 'os';
-import * as path from 'path';
+import path from 'path';
 
 @Injectable()
 export class GoogleAuthService {

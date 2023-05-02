@@ -1,14 +1,14 @@
 /* eslint-disable @typescript-eslint/no-var-requires */
 import { NestFactory } from '@nestjs/core';
 import { NestExpressApplication } from '@nestjs/platform-express';
-import { join } from 'path';
+import path, { join } from 'path';
 import { AppModule } from './app.module';
 
 import * as dotenv from 'dotenv';
 import * as fs from 'fs';
 import * as os from 'os';
 import fileUpload from 'express-fileupload';
-import * as nunjucks from 'nunjucks';
+import nunjucks from 'nunjucks';
 
 dotenv.config();
 
@@ -21,8 +21,8 @@ async function bootstrap() {
   const app: NestExpressApplication = IS_LOCAL
     ? await NestFactory.create(AppModule, {
         httpsOptions: {
-          key: fs.readFileSync(ROOT_DIR + 'localhost-key.pem'),
-          cert: fs.readFileSync(ROOT_DIR + 'localhost.pem'),
+          key: fs.readFileSync(ROOT_DIR + '/localhost-key.pem'),
+          cert: fs.readFileSync(ROOT_DIR + '/localhost.pem'),
         },
       })
     : await NestFactory.create(AppModule);
@@ -44,7 +44,7 @@ async function bootstrap() {
     noCache: !IS_PRODUCTION,
   };
 
-  nunjucks.configure(join(ROOT_DIR, IS_PRODUCTION ? 'dist' : 'src'), opts);
+  nunjucks.configure(path.resolve(__dirname, 'views'), opts);
 
   app.enableCors();
   app.set('trust proxy', 1);

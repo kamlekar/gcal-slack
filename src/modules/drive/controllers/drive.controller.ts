@@ -19,7 +19,7 @@ export class DriveController {
       requiredAuth = true;
     }
 
-    res.render('views/pages/drive/upload.njk', {
+    res.render('pages/drive/upload.njk', {
       authUrl: this.googleAuthService.generateAuthUrl(
         await this.googleAuthService.getAuthClient(),
       ),

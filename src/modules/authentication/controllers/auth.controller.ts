@@ -26,7 +26,7 @@ export class AuthController {
 
   @Get('/auth')
   async goToAuth(@Res() res: Response) {
-    res.render('views/pages/authenticate/index.njk', {
+    res.render('pages/authenticate/index.njk', {
       authUrl: this.googleAuthService.generateAuthUrl(
         await this.googleAuthService.getAuthClient(),
       ),
