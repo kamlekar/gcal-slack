@@ -13,16 +13,19 @@ import * as nunjucks from 'nunjucks';
 dotenv.config();
 
 const ROOT_DIR: string = join(__dirname, '..');
+// @TODO: pass proper production flag here
 const IS_PRODUCTION: boolean = process.env.LOCAL !== 'true';
+const IS_LOCAL: boolean = process.env.LOCAL === 'true';
 
 async function bootstrap() {
-  const options = {
-    key: fs.readFileSync(ROOT_DIR + '/localhost-key.pem'),
-    cert: fs.readFileSync(ROOT_DIR + '/localhost.pem'),
-  };
-  const app: NestExpressApplication = await NestFactory.create(AppModule, {
-    httpsOptions: options,
-  });
+  const app: NestExpressApplication = IS_LOCAL
+    ? await NestFactory.create(AppModule, {
+        httpsOptions: {
+          key: fs.readFileSync(ROOT_DIR + 'localhost-key.pem'),
+          cert: fs.readFileSync(ROOT_DIR + 'localhost.pem'),
+        },
+      })
+    : await NestFactory.create(AppModule);
 
   app.use(
     fileUpload({
@@ -51,4 +54,5 @@ async function bootstrap() {
     console.log(`server running on ${port}`);
   });
 }
+
 bootstrap();
