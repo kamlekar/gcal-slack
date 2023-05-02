@@ -14,9 +14,6 @@ export class EventsService {
     const calendar = google.calendar({
       version: 'v3',
       auth,
-      params: {
-        key: process.env.GOOGLE_API_KEY,
-      },
     });
     const res = await calendar.events.list({
       calendarId: 'primary',

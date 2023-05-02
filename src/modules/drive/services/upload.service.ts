@@ -18,9 +18,6 @@ export class UploadService {
 
     const service = google.drive({
       version: 'v3',
-      params: {
-        key: process.env.GOOGLE_API_KEY,
-      },
       auth: oauth2Client,
     });
 
