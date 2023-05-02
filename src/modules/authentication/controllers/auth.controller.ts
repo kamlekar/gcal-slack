@@ -1,5 +1,5 @@
 import { Controller, Get, Req, Res } from '@nestjs/common';
-import { Request, Response } from 'express';
+import { Request, Response } from 'express-serve-static-core';
 import { GoogleAuthService } from '../services/googleAuth.service';
 import { deleteFile } from '../../../services/utils/files.service';
 

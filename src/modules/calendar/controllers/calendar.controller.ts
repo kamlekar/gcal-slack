@@ -3,7 +3,7 @@ import { TriggersService } from '../services/triggers.service';
 import { GoogleAuthService } from '../../authentication/services/googleAuth.service';
 import { EventsService } from '../services/events.service';
 import { WatchService } from '../services/watch.service';
-import { Request, Response } from 'express';
+import { Request, Response } from 'express-serve-static-core';
 
 @Controller()
 export class CalendarController {

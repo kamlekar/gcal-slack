@@ -3,7 +3,7 @@ import { Inject, Injectable } from '@nestjs/common';
 import { google } from 'googleapis';
 import { OAuth2Client } from 'googleapis-common';
 import { deleteFile } from '../../../services/utils/files.service';
-import { Request, Response } from 'express';
+import { Request, Response } from 'express-serve-static-core';
 import { CREDENTIALS_PATH, SCOPES } from '../../../common/constants';
 
 import * as fs from 'fs';
