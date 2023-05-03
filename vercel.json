@@ -4,6 +4,10 @@
     {
       "src": "src/main.ts",
       "use": "@vercel/node"
+    },
+    {
+      "src": "**/*.njk",
+      "use": "@vercel/static"
     }
   ],
   "routes": [
