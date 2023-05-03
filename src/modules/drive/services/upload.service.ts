@@ -3,7 +3,7 @@ import { Injectable } from '@nestjs/common';
 import { google } from 'googleapis';
 import { commaSeparatedValues } from '../../../services/utils/strings.service';
 
-import * as fs from 'fs';
+import fs from 'fs';
 import moment from 'moment';
 
 @Injectable()
