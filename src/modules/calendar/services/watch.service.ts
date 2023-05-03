@@ -12,9 +12,6 @@ export class WatchService {
   async watchCalendarEvents(auth) {
     const calendar = google.calendar({
       version: 'v3',
-      params: {
-        key: process.env.GOOGLE_API_KEY,
-      },
       auth,
     });
     const channel = {
@@ -41,9 +38,6 @@ export class WatchService {
   stopWatchingCalendarEvents(auth) {
     const calendar = google.calendar({
       version: 'v3',
-      params: {
-        key: process.env.GOOGLE_API_KEY,
-      },
       auth,
     });
 

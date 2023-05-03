@@ -3,8 +3,8 @@ import { Injectable } from '@nestjs/common';
 import { google } from 'googleapis';
 import { commaSeparatedValues } from '../../../services/utils/strings.service';
 
-import * as fs from 'fs';
-import * as moment from 'moment';
+import fs from 'fs';
+import moment from 'moment';
 
 @Injectable()
 export class UploadService {
@@ -18,9 +18,6 @@ export class UploadService {
 
     const service = google.drive({
       version: 'v3',
-      params: {
-        key: process.env.GOOGLE_API_KEY,
-      },
       auth: oauth2Client,
     });
 

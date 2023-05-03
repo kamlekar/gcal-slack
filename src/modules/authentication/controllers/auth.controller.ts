@@ -1,5 +1,5 @@
 import { Controller, Get, Req, Res } from '@nestjs/common';
-import { Request, Response } from 'express';
+import { Request, Response } from 'express-serve-static-core';
 import { GoogleAuthService } from '../services/googleAuth.service';
 import { deleteFile } from '../../../services/utils/files.service';
 
@@ -26,7 +26,7 @@ export class AuthController {
 
   @Get('/auth')
   async goToAuth(@Res() res: Response) {
-    res.render('views/pages/authenticate/index.njk', {
+    res.render('pages/authenticate/index.njk', {
       authUrl: this.googleAuthService.generateAuthUrl(
         await this.googleAuthService.getAuthClient(),
       ),

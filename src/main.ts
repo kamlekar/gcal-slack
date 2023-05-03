@@ -1,28 +1,31 @@
 /* eslint-disable @typescript-eslint/no-var-requires */
 import { NestFactory } from '@nestjs/core';
 import { NestExpressApplication } from '@nestjs/platform-express';
-import { join } from 'path';
+import path, { join } from 'path';
 import { AppModule } from './app.module';
 
-import * as dotenv from 'dotenv';
-import * as fs from 'fs';
-import * as os from 'os';
-import * as fileUpload from 'express-fileupload';
-import * as nunjucks from 'nunjucks';
+import dotenv from 'dotenv';
+import fs from 'fs';
+import os from 'os';
+import fileUpload from 'express-fileupload';
+import nunjucks from 'nunjucks';
 
 dotenv.config();
 
 const ROOT_DIR: string = join(__dirname, '..');
+// @TODO: pass proper production flag here
 const IS_PRODUCTION: boolean = process.env.LOCAL !== 'true';
+const IS_LOCAL: boolean = process.env.LOCAL === 'true';
 
 async function bootstrap() {
-  const options = {
-    key: fs.readFileSync(ROOT_DIR + '/localhost-key.pem'),
-    cert: fs.readFileSync(ROOT_DIR + '/localhost.pem'),
-  };
-  const app: NestExpressApplication = await NestFactory.create(AppModule, {
-    httpsOptions: options,
-  });
+  const app: NestExpressApplication = IS_LOCAL
+    ? await NestFactory.create(AppModule, {
+        httpsOptions: {
+          key: fs.readFileSync(ROOT_DIR + '/localhost-key.pem'),
+          cert: fs.readFileSync(ROOT_DIR + '/localhost.pem'),
+        },
+      })
+    : await NestFactory.create(AppModule);
 
   app.use(
     fileUpload({
@@ -41,7 +44,7 @@ async function bootstrap() {
     noCache: !IS_PRODUCTION,
   };
 
-  nunjucks.configure(join(ROOT_DIR, IS_PRODUCTION ? 'dist' : 'src'), opts);
+  nunjucks.configure(path.resolve(__dirname, 'views'), opts);
 
   app.enableCors();
   app.set('trust proxy', 1);
@@ -51,4 +54,5 @@ async function bootstrap() {
     console.log(`server running on ${port}`);
   });
 }
+
 bootstrap();

@@ -1,6 +1,6 @@
 import { Controller, Get, Post, Req, Res } from '@nestjs/common';
 import { UploadService } from '../services/upload.service';
-import { Request, Response } from 'express';
+import { Request, Response } from 'express-serve-static-core';
 import { GoogleAuthService } from '../../authentication/services/googleAuth.service';
 
 @Controller()
@@ -19,7 +19,7 @@ export class DriveController {
       requiredAuth = true;
     }
 
-    res.render('views/pages/drive/upload.njk', {
+    res.render('pages/drive/upload.njk', {
       authUrl: this.googleAuthService.generateAuthUrl(
         await this.googleAuthService.getAuthClient(),
       ),

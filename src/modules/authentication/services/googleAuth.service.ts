@@ -3,13 +3,13 @@ import { Inject, Injectable } from '@nestjs/common';
 import { google } from 'googleapis';
 import { OAuth2Client } from 'googleapis-common';
 import { deleteFile } from '../../../services/utils/files.service';
-import { Request, Response } from 'express';
+import { Request, Response } from 'express-serve-static-core';
 import { CREDENTIALS_PATH, SCOPES } from '../../../common/constants';
 
-import * as fs from 'fs';
-import * as url from 'url';
-import * as os from 'os';
-import * as path from 'path';
+import fs from 'fs';
+import url from 'url';
+import os from 'os';
+import path from 'path';
 
 @Injectable()
 export class GoogleAuthService {
