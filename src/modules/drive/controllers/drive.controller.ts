@@ -30,9 +30,12 @@ export class DriveController {
   @Post('/drive/upload')
   submitUploadForm(@Req() req: Request, @Res() res: Response) {
     this.googleAuthService.authCheck(req, res).then((authClient) => {
-      this.uploadService.uploadFile(req, res, authClient).then((files) => {
-        res.end(JSON.stringify(files));
-      });
+      this.uploadService
+        .uploadFile(req, res, authClient)
+        .then((files) => {
+          res.end(JSON.stringify(files));
+        })
+        .catch((ex) => console.log(ex));
     });
   }
 }

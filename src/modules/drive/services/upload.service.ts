@@ -37,6 +37,7 @@ export class UploadService {
       console.log('File Id:', file.id);
       return { file, ailmentShortcuts, hospitalShortcut };
     } catch (err) {
+      console.log(err);
       // TODO(developer) - Handle error
       throw err;
     }
