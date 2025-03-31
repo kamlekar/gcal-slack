@@ -1,0 +1,14 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Drive Upload App</title>
+</head>
+<body>
+  {% if requiredAuth %}
+    <p>Please <a href="{{ authUrl }}">authenticate</a> to continue.</p>
+  {% else %}
+    <p>Welcome to the Drive Upload App!</p>
+    <p><a href="/drive/upload">Upload Files</a></p>
+  {% endif %}
+</body>
+</html> 
