@@ -1,0 +1,9 @@
+{
+    "emmet.includeLanguages": {
+        "njk": "html"
+    },
+    "files.associations": {
+        "*.html": "njk"
+    },
+    "nunjucksTemplate.preserveEmptyLine": 3
+}

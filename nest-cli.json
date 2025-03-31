@@ -4,6 +4,10 @@
   "sourceRoot": "src",
   "compilerOptions": {
     "deleteOutDir": true,
-    "assets": ["**/*.njk"]
+    "assets": ["**/*.njk"],
+    "watchAssets": true,
+    "sourceMap": true,
+    "inlineSourceMap": true,
+    "inlineSources": true
   }
 }
