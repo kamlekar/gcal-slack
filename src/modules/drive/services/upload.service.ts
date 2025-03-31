@@ -21,6 +21,11 @@ export class UploadService {
       auth: oauth2Client,
     });
 
+    req.body.patientName = req.body.patientName?.toLowerCase();
+    req.body.ailments = req.body.ailments?.toLowerCase();
+    req.body.hospital = req.body.hospital?.toLowerCase();
+    req.body.fileType = req.body.fileType?.toLowerCase();
+
     try {
       const file = await this.storeFileOnDrive(inputFile, req.body, service);
       const ailmentShortcuts = await this.storeAilmentsShortcutsOnDrive(
